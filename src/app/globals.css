@@ -1,0 +1,252 @@
+@import "tailwindcss";
+
+/*
+  "The enamel timetable."
+
+  v1 of this site was dark and cinematic and sold the atmosphere of the coast. This one sells
+  tickets, so it is built to look like the object a guest actually wants: a sun-bleached
+  timetable board on a quay. Limestone paper, hairline rules, small-caps labels, tabular
+  figures, and exactly one piece of red enamel — the button that takes the money.
+
+  The palette is read off the bay rather than picked from a swatch generator, and the brand red
+  is demoted from a surface to an instrument. It appears on the logo, on booking, and on the
+  live dot of the departure board. Nowhere else. That is the client's own instruction, and it
+  is also the reason the red still lands when it does appear.
+*/
+
+@theme {
+  /* Paper is limestone in the sun. Never pure white — pure white reads as a template. */
+  --color-paper: #fbf8f3;
+  --color-paper-warm: #f5efe4;
+  --color-paper-deep: #ece3d4;
+  --color-paper-edge: #ddd2be;
+
+  /* Ink is deep water. Never pure black. */
+  --color-ink: #1c2a33;
+  --color-ink-mid: #45565f;
+  --color-ink-soft: #7d8b92;
+
+  --color-sea: #5e8c8a;
+  --color-sea-light: #a8c8c6;
+  --color-sea-mist: #dfeceb;
+
+  --color-sky: #8fb4c9;
+  --color-sky-light: #bbd3e0;
+  --color-sky-mist: #e6eff4;
+
+  --color-sand: #e0cba8;
+  --color-sand-deep: #b9964f;
+
+  --color-terracotta: #d8a48f;
+  --color-terracotta-deep: #b0664a;
+
+  /* The one saturated colour on the site. It belongs to the Blue Cave, because there it *is*
+     the product being sold. */
+  --color-cave: #1b7fb5;
+  --color-cave-deep: #0c4a6b;
+
+  /* The logo red. An instrument, not a surface. */
+  --color-brand: #e7282e;
+  --color-brand-deep: #c01c22;
+
+  --font-display: var(--font-display-serif), ui-serif, Georgia, serif;
+  --font-sans: var(--font-body-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Lenis is deliberately absent. It costs mobile responsiveness on a site whose whole job
+       is a short path to the booking button, so native scroll is the feature. */
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+  }
+
+  ::selection {
+    background-color: var(--color-sea-light);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-sea);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    /* Instrument Serif is drawn tight. It wants negative tracking and short leading at display
+       size, otherwise it reads like any default serif. */
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* The small-caps line that carries labels: place names, "sailing next", est. 1988. */
+  .label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+
+  /*
+    Times and prices behave like a departure board: fixed-width figures, so a row never
+    reflows as the clock ticks over. Not a nicety — the countdown re-renders every thirty
+    seconds, and proportional digits make the whole table twitch.
+  */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* The hairline. One rule, reused wherever anything meets anything. */
+  .rule {
+    height: 1px;
+    background: color-mix(in oklab, var(--color-ink) 14%, transparent);
+  }
+
+  /*
+    The enamel button: painted metal, not a web gradient. Flat red, a darker lip along the
+    bottom for the thickness of the paint, and it presses in when you push it.
+  */
+  .enamel {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--color-brand);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    border-radius: 999px;
+    box-shadow:
+      inset 0 -2px 0 color-mix(in oklab, var(--color-brand-deep) 90%, transparent),
+      0 1px 2px color-mix(in oklab, var(--color-ink) 20%, transparent);
+    transition:
+      transform 140ms var(--ease-out-quart),
+      background-color 140ms var(--ease-out-quart),
+      box-shadow 140ms var(--ease-out-quart);
+  }
+
+  .enamel:hover {
+    background-color: var(--color-brand-deep);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 -2px 0 color-mix(in oklab, var(--color-brand-deep) 90%, transparent),
+      0 4px 12px color-mix(in oklab, var(--color-brand) 32%, transparent);
+  }
+
+  .enamel:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px color-mix(in oklab, var(--color-brand-deep) 60%, transparent);
+  }
+
+  /* Secondary action. Reads as engraved into the paper rather than sitting on top of it. */
+  .engraved {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 22%, transparent);
+    color: var(--color-ink);
+    font-weight: 500;
+    transition:
+      background-color 140ms var(--ease-out-quart),
+      border-color 140ms var(--ease-out-quart);
+  }
+
+  .engraved:hover {
+    background-color: color-mix(in oklab, var(--color-ink) 5%, transparent);
+    border-color: color-mix(in oklab, var(--color-ink) 38%, transparent);
+  }
+}
+
+@layer utilities {
+  /*
+    Paper tooth. Inline SVG turbulence rather than an image request — it is the difference
+    between limestone and a flat beige fill, and it costs nothing on the network.
+  */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.11'/%3E%3C/svg%3E");
+  }
+
+  /* The live dot on the departure board — the only thing on the site that moves by itself. */
+  .pulse-dot {
+    animation: pulse-dot 2.4s var(--ease-out-quart) infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.35;
+      transform: scale(0.82);
+    }
+  }
+}
+
+/*
+  Scroll reveals start hidden and GSAP clears them. Paired with a <noscript> override in the
+  layout so a reader without JavaScript gets the whole page instead of a blank one — this is a
+  selling site, and an invisible page sells nothing.
+*/
+[data-reveal],
+[data-reveal-stagger] > * {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-reveal-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .pulse-dot {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
