@@ -300,10 +300,21 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
               ))}
             </section>
 
+            {/*
+              Set as a printed footnote — hairline above, quiet text below — because that is how
+              every other aside on this site behaves: the timetable's key, the board's season note.
+              It was a tinted box with a coloured tab down one side, which is the generic callout
+              every template ships and the only element here that did not belong to the timetable
+              idiom. The content is a caveat about the sea and the light, and a caveat should read
+              as small print rather than as a banner.
+            */}
             {tour.note && (
-              <p className="mt-8 rounded-sm border-l-2 border-sand-deep bg-paper-warm px-5 py-4 text-[0.9375rem] text-ink-mid">
-                {tour.note}
-              </p>
+              <div className="mt-10">
+                <div className="rule" />
+                <p className="mt-4 max-w-2xl text-[0.9375rem] leading-relaxed text-ink-soft">
+                  {tour.note}
+                </p>
+              </div>
             )}
 
             <Questions />
