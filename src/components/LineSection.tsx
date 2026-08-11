@@ -19,7 +19,7 @@ export function LineSection() {
       <div className="shell">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5" data-reveal>
-            <p className="label text-ink-soft">When they go</p>
+            <p className="label text-ink-soft">The daily line</p>
             <h2 className="mt-4 text-4xl sm:text-5xl xl:text-6xl">The road here is water.</h2>
             <p className="mt-5 text-[1.0625rem] leading-relaxed text-ink-mid">
               Five villages, one bay, and a boat between them all day long. No coach parks, no

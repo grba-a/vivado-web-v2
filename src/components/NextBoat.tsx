@@ -138,17 +138,35 @@ export function NextBoatLine() {
   return (
     <Link
       href="/line"
-      className="flex items-center justify-between gap-3 rounded-sm border border-ink/12 bg-paper px-4 py-3"
+      className="block rounded-sm border border-ink/12 bg-paper px-4 py-3.5"
     >
-      <span className="tnum flex min-w-0 items-baseline gap-2 text-sm">
-        {next && !next.tomorrow && (
-          <span aria-hidden className="pulse-dot size-1.5 shrink-0 rounded-full bg-brand" />
-        )}
-        <span className="text-ink-soft">Next from {jettyName}</span>
-        <span className="font-medium text-ink">{next ? next.departure.time : "—"}</span>
-        {next && <span className="truncate text-ink-soft">{countdown(next)}</span>}
+      {/*
+        Two rows, not one.
+
+        Four labelled parts on a single line did not fit 390px: the jetty name wrapped and the
+        countdown was clipped to "in 22 …", which is worse than showing no countdown at all. Stacking
+        the label above the time buys all the room needed and lets the time be set at the size it
+        deserves — the same display face the desktop board uses, so a phone gets the smaller version
+        of the board rather than a different thing wearing its data.
+      */}
+      <span className="flex items-center justify-between gap-3">
+        <span className="label text-ink-mid">Next from {jettyName}</span>
+        <span className="text-xs text-ink-soft">Full timetable →</span>
       </span>
-      <span className="shrink-0 text-sm text-ink-soft">Timetable →</span>
+
+      <span className="tnum mt-2.5 flex items-baseline gap-3">
+        {next && !next.tomorrow && (
+          <span aria-hidden className="pulse-dot mb-1 size-1.5 shrink-0 rounded-full bg-brand" />
+        )}
+        <span className="font-display text-3xl leading-none text-ink">
+          {next ? next.departure.time : "—"}
+        </span>
+        {next && (
+          <span className="text-sm text-ink-mid">
+            {next.tomorrow ? "tomorrow" : countdown(next)}
+          </span>
+        )}
+      </span>
     </Link>
   );
 }

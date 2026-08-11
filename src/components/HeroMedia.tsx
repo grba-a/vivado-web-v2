@@ -73,17 +73,18 @@ export function HeroMedia() {
 
   return (
     /*
-      On a wide screen the film is the whole section's background. On a phone it is a band across
-      the top instead — which is not just composition. Stretched down a tall section, `object-cover`
-      fits the frame by height and the only thing left in the visible top strip is the deck of the
-      tall ship, read so close it stops looking like a boat. Bounded to a band, the same file lands
-      on the middle of the frame: the white hull with the deep-red canopy, which is the one that
-      carries the brand's colour in real life.
+      The film fills the section at every width now.
+
+      It was boxed into a band across the top of a phone screen back when the hero was a thousand
+      pixels tall — stretched down that much, `object-cover` fitted the frame by height and the only
+      thing left in the visible strip was the tall ship's deck, read so close it stopped looking like
+      a boat. The hero is a single viewport now, and the portrait cut is 640x800 against roughly
+      390x780, so covering it crops only the sides and the boats stay in frame.
+
+      Filling it also removes a hard horizontal seam where the band used to stop, and lets the film
+      show faintly around the type instead of being sealed off above it.
     */
-    <div
-      aria-hidden
-      className="absolute inset-x-0 top-0 h-[38vh] overflow-hidden lg:h-full"
-    >
+    <div aria-hidden className="absolute inset-0 overflow-hidden">
       {/*
         A plain <picture> rather than next/image: both files are already encoded at exactly the
         size and format they will be served in, so the optimiser has nothing left to do, and

@@ -32,9 +32,11 @@ export function Offer() {
     <section id="tours" className="bg-paper py-16 sm:py-24">
       <div className="shell">
         <div data-reveal>
-          <p className="label text-ink-soft">What we offer</p>
+          <p className="label text-ink-soft">All three tours</p>
+          {/* A menu, not a third pitch. The line and the islands were each argued for above; here
+              they only have to be comparable. */}
           <h2 className="mt-4 max-w-2xl text-4xl sm:text-5xl xl:max-w-3xl xl:text-6xl">
-            Two days out and one way to get about.
+            Everything we run, side by side.
           </h2>
         </div>
 

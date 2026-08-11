@@ -1,19 +1,24 @@
 import { Motion } from "@/components/Motion";
 import { Hero } from "@/components/Hero";
+import { LineSection } from "@/components/LineSection";
+import { Elaphiti } from "@/components/Elaphiti";
 import { Offer } from "@/components/Offer";
 import { Proof } from "@/components/Proof";
-import { LineSection } from "@/components/LineSection";
 import { About } from "@/components/About";
 import { ReadyBand } from "@/components/ReadyBand";
 import { StickyBar } from "@/components/StickyBar";
 import { HERO_TOUR } from "@/lib/tours";
 
 /**
- * Each section has one job, in the order the client asked for: the day out, what we offer, a
- * reason to believe it, when the boats go, who runs them, and then the last ask.
+ * Position, then sell.
  *
- * Proof sits before the timetable on purpose. A guest reads the prices, wants to know whether to
- * trust them, and only then cares which boat leaves when.
+ * The hero names the company; the line comes first because it is the highest volume and the search
+ * that brings people here; the island day gets its own case; then all three products side by side
+ * with prices. It is close to the order vivado.hr itself uses, which is not a coincidence — the
+ * client asked for it, and their own page proves it works for a first-time visitor.
+ *
+ * Proof sits after the menu on purpose: a guest reads the prices, wants to know whether to trust
+ * them, and only then cares who runs the boats.
  */
 export default function Home() {
   return (
@@ -22,9 +27,10 @@ export default function Home() {
       {/* Room for the mobile sticky bar so it never covers the last line of the footer. */}
       <main className="pb-20 md:pb-0">
         <Hero />
+        <LineSection />
+        <Elaphiti />
         <Offer />
         <Proof />
-        <LineSection />
         <About />
         <ReadyBand />
       </main>

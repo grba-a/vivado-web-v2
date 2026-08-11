@@ -53,6 +53,9 @@
   --font-sans: var(--font-body-sans), ui-sans-serif, system-ui, sans-serif;
 
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Paper as bare channels, so a gradient can fade it out by alpha without hard-coding the hex. */
+  --paper-channels: 251 248 243;
 }
 
 @layer base {
@@ -206,6 +209,51 @@
   .enamel:active {
     transform: translateY(1px);
     box-shadow: inset 0 2px 4px color-mix(in oklab, var(--color-brand-deep) 60%, transparent);
+  }
+
+  /*
+    A bloom of paper instead of a panel.
+
+    The heading used to sit in a bordered card. A card is a hard edge laid over a photograph, and on
+    a hero whose whole idea is that the film looks *printed* on the same paper as the site, that edge
+    fights the illusion. This dissolves instead: nearly opaque where the type is, gone by the edges,
+    the same move already used along the top and bottom of the section.
+
+    Alpha, not `color-mix`, so the falloff is predictable — mixing a colour toward `transparent`
+    interpolates the colour channels too and the tail turns grey rather than simply thinning.
+  */
+  .wash {
+    position: absolute;
+    /*
+      Tight to the type. Narrowing the box and softening the alpha pull against each other — the
+      thinner the box, the closer the outer characters sit to the feathered edge — so the answer is a
+      *shorter* feather rather than a wider one. A 16px blur keeps the softness and spends about
+      30px outside the text instead of 70.
+    */
+    inset: -1rem -1.25rem -1.1rem;
+    pointer-events: none;
+
+    /*
+      A blurred rectangle, not a radial gradient.
+
+      The radial version was the obvious reach and it was wrong twice over: a long linear alpha ramp
+      bands visibly across a photograph, and an ellipse large enough to cover a wide block of type
+      inevitably bleeds far past it — it lightened half the frame to protect four lines of text.
+
+      Blurring a solid box instead gives a shape that follows the content and feathers only at the
+      edge, so the film stays legible right up to where the words start. `filter` is safe here in a
+      way `backdrop-filter` is not: WebKit paints element filters reliably, and the value is static
+      so it composites once rather than every frame.
+    */
+    border-radius: 1.25rem;
+    /*
+      0.8, not opaque. The client wants the film readable through the bloom, and this is the floor
+      that keeps it legible: over the darkest water in the shot, ink-mid body copy lands at about
+      4.9:1, still clear of the 4.5:1 needed for normal text. Below roughly 0.75 the paragraph — the
+      lightest, smallest text on the screen — starts to fail, so this is measured rather than picked.
+    */
+    background: rgb(var(--paper-channels) / 0.72);
+    filter: blur(16px);
   }
 
   /* Secondary action. Reads as engraved into the paper rather than sitting on top of it. */

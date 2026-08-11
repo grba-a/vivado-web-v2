@@ -360,6 +360,73 @@ async function assertReadyBand(browser) {
   await context.close();
 }
 
+/* ---- The point of the restructure, guarded --------------------------------------------- */
+
+/**
+ * The hero must name the company, not quote one tour.
+ *
+ * This is the assertion that protects the whole round. It is easy to "improve" a hero back into a
+ * single-product pitch months from now, and the symptom is exactly this: a price in the H1 and no
+ * mention of the line.
+ */
+async function assertPositioning(browser) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await settle(page);
+
+  const h1 = (await page.locator("h1").first().innerText()).toLowerCase();
+  check(h1.includes("boat"), "hero H1 names the category", JSON.stringify(h1));
+  check(h1.includes("line"), "hero H1 mentions the line, not only tours", JSON.stringify(h1));
+  check(!h1.includes("\u20ac"), "hero H1 carries no price", JSON.stringify(h1));
+
+  /* Position, then sell: the line, then the island day, then the menu. */
+  const order = await page.evaluate(() => {
+    const y = (sel) => {
+      const el = document.querySelector(sel);
+      return el ? el.getBoundingClientRect().top + window.scrollY : null;
+    };
+    return { line: y("#line"), elaphiti: y("#elaphiti"), tours: y("#tours") };
+  });
+  check(
+    order.line !== null && order.elaphiti !== null && order.tours !== null,
+    "all three sections exist",
+    JSON.stringify(order),
+  );
+  check(
+    order.line < order.elaphiti && order.elaphiti < order.tours,
+    "sections run line then islands then menu",
+    JSON.stringify(order),
+  );
+
+  /*
+    The island headline may appear once and only once. Featuring a product twice is the client's
+    chosen structure; saying the same sentence twice is what turns it into filler.
+  */
+  const body = await page.locator("body").innerText();
+  const needle = "nowhere to be until six";
+  const times = body.toLowerCase().split(needle).length - 1;
+  check(times === 1, "the island headline appears exactly once", `found ${times}`);
+
+  /*
+    The hero's primary action is navigational now, so it must not be a booking link — and it must
+    not be red either. Red is reserved for buttons that take money; spending it on "see the tours"
+    would leave the brand colour meaning nothing.
+  */
+  /*
+    One red button in the hero, pointing at the menu. Red for a navigational button is a deliberate
+    exception the client asked for, so it is asserted rather than merely allowed — and the count is
+    checked so a second one never creeps in beside it.
+  */
+  const heroCtas = await page.locator("[data-hero] a.enamel").evaluateAll((els) =>
+    els.map((e) => e.getAttribute("href")),
+  );
+  check(heroCtas.length === 1, "exactly one red button in the hero", JSON.stringify(heroCtas));
+  check(heroCtas[0] === "#tours", "hero primary points at the menu", String(heroCtas[0]));
+
+  await context.close();
+}
+
 /* ---- Run ------------------------------------------------------------------------------- */
 
 const cr = await chromium.launch();
@@ -368,6 +435,7 @@ await shoot(cr, { label: "desktop", width: 1440, height: 900 });
 console.log("\nChromium — phone 390");
 await shoot(cr, { label: "mobile", width: 390, height: 844, isMobile: true });
 console.log("\nAssertions");
+await assertPositioning(cr);
 await assertBoard(cr);
 await assertBooking(cr);
 await assertVideoGates(cr);
