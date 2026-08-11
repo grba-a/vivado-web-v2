@@ -16,7 +16,7 @@ export function About() {
 
   return (
     <section id="about" className="bg-paper py-14 sm:py-20">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="shell">
         <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12" data-reveal>
           <div className="lg:col-span-4">
             <div className="grain relative aspect-[4/3] overflow-hidden rounded-sm">
@@ -34,7 +34,7 @@ export function About() {
 
           <div className="lg:col-span-8">
             <p className="label text-ink-soft">Who takes you out</p>
-            <h2 className="mt-4 text-3xl sm:text-4xl">
+            <h2 className="mt-4 text-3xl sm:text-4xl xl:text-5xl">
               {summers} summers, one family, the same bay.
             </h2>
             <p className="mt-4 max-w-xl text-[1.0625rem] leading-relaxed text-ink-mid">

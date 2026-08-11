@@ -3,14 +3,41 @@ import Link from "next/link";
 import { CONTACT, TOURS } from "@/lib/tours";
 
 /**
- * Reviews of this business complain, more than anything else, about not being able to reach
- * anyone. So the footer leads with three ways to talk to a person — phone, WhatsApp, email —
- * rather than with a sitemap.
+ * Reviews of this business complain, more than anything else, about not being able to reach anyone.
+ * So the contact details lead rather than sit under a sitemap — but as plain links now, not
+ * buttons. Every screen above this one already ends in a call to action, and a third pair of
+ * buttons down here only competed with them.
+ *
+ * Icons rather than the words "Instagram" and "Facebook": at this size a mark is recognised faster
+ * than it is read, and both are inline SVG so the footer costs no extra requests.
  */
+
+/* Simple-Icons glyphs, drawn at 24 and inheriting `currentColor` so they follow the link's state. */
+function InstagramMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="currentColor">
+      <path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 1.98c-3.15 0-3.5.01-4.73.07-.92.04-1.36.19-1.65.3-.36.14-.6.3-.86.56-.26.26-.42.5-.56.86-.11.29-.26.73-.3 1.65-.06 1.23-.07 1.58-.07 4.73s.01 3.5.07 4.73c.4.92.19 1.36.3 1.65.14.36.3.6.56.86.26.26.5.42.86.56.29.11.73.26 1.65.3 1.23.06 1.58.07 4.73.07s3.5-.01 4.73-.07c.92-.04 1.36-.19 1.65-.3.36-.14.6-.3.86-.56.26-.26.42-.5.56-.86.11-.29.26-.73.3-1.65.06-1.23.07-1.58.07-4.73s-.01-3.5-.07-4.73c-.04-.92-.19-1.36-.3-1.65a2.3 2.3 0 0 0-.56-.86 2.3 2.3 0 0 0-.86-.56c-.29-.11-.73-.26-1.65-.3-1.23-.06-1.58-.07-4.73-.07Zm0 3.37a4.49 4.49 0 1 1 0 8.98 4.49 4.49 0 0 1 0-8.98Zm0 7.4a2.91 2.91 0 1 0 0-5.82 2.91 2.91 0 0 0 0 5.83Zm5.72-7.6a1.05 1.05 0 1 1-2.1 0 1.05 1.05 0 0 1 2.1 0Z" />
+    </svg>
+  );
+}
+
+function FacebookMark() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className="size-5" fill="currentColor">
+      <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.18 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.9 3.77-3.9 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.45 2.91h-2.33V22c4.78-.76 8.45-4.92 8.45-9.94Z" />
+    </svg>
+  );
+}
+
+const SOCIAL = [
+  { href: CONTACT.instagram, label: "Vivado on Instagram", Mark: InstagramMark },
+  { href: CONTACT.facebook, label: "Vivado on Facebook", Mark: FacebookMark },
+];
+
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-ink/10 bg-paper-deep">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8 sm:py-16">
+      <div className="shell py-14 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
             <Image
@@ -25,19 +52,21 @@ export function Footer() {
               Family-run since {CONTACT.since}.
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-2">
-              <a href={CONTACT.phoneHref} className="enamel px-5 py-2.5 text-sm">
-                {CONTACT.phone}
-              </a>
-              <a
-                href={CONTACT.whatsapp}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="engraved px-5 py-2.5 text-sm"
-              >
-                WhatsApp
-              </a>
-            </div>
+            <ul className="mt-6 flex items-center gap-3">
+              {SOCIAL.map(({ href, label, Mark }) => (
+                <li key={href}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="grid size-10 place-items-center rounded-full border border-ink/15 text-ink-mid transition-colors hover:border-ink/35 hover:text-ink"
+                  >
+                    <Mark />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div>
@@ -63,48 +92,44 @@ export function Footer() {
 
           <div>
             <h3 className="label text-ink-soft">Find us</h3>
+            {/* The phone moved up here when the buttons came out — it is the one detail on this page
+                that a stranded guest actually needs, and it should not have left with them. */}
             <address className="mt-4 space-y-2.5 text-sm not-italic text-ink-mid">
-              <p>{CONTACT.address}</p>
               <p>
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={CONTACT.phoneHref}
+                  className="tnum transition-colors hover:text-ink"
+                >
+                  {CONTACT.phone}
+                </a>
+              </p>
+              <p>
+                <a
+                  href={CONTACT.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="transition-colors hover:text-ink"
                 >
+                  WhatsApp
+                </a>
+              </p>
+              <p>
+                <a href={`mailto:${CONTACT.email}`} className="transition-colors hover:text-ink">
                   {CONTACT.email}
                 </a>
               </p>
+              <p>{CONTACT.address}</p>
             </address>
-            <ul className="mt-4 flex gap-4 text-sm">
-              <li>
-                <a
-                  href={CONTACT.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink-mid transition-colors hover:text-ink"
-                >
-                  Instagram
-                </a>
-              </li>
-              <li>
-                <a
-                  href={CONTACT.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-ink-mid transition-colors hover:text-ink"
-                >
-                  Facebook
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
 
         <div className="rule my-10" />
 
-        <p className="text-xs text-ink-soft">
-          {CONTACT.legalName} <span className="mx-1.5 text-ink/25">·</span> Booking handled by
-          ez-booker, with instant confirmation.
-        </p>
+        {/* Legal name to the left, how the booking is handled to the right. */}
+        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-xs text-ink-soft">
+          <p>{CONTACT.legalName}</p>
+          <p>Booking handled by ez-booker, with instant confirmation.</p>
+        </div>
       </div>
     </footer>
   );

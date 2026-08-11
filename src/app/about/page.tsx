@@ -29,7 +29,7 @@ export default function Page() {
       <main className="pb-20 md:pb-0">
         {/* ---- Who ------------------------------------------------------------------- */}
         <section className="border-b border-ink/10 bg-paper-warm">
-          <div className="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+          <div className="shell py-12 sm:py-16">
             <Link href="/" className="text-sm text-ink-mid transition-colors hover:text-ink">
               ← Everything Vivado runs
             </Link>
@@ -37,7 +37,7 @@ export default function Page() {
             <div className="mt-8 grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
               <div className="lg:col-span-7" data-intro-stagger>
                 <p className="label text-ink-soft">Who takes you out</p>
-                <h1 className="mt-4 text-[2.5rem] sm:text-5xl lg:text-[3.5rem]">
+                <h1 className="mt-4 text-[2.5rem] sm:text-5xl lg:text-[3.5rem] xl:text-[4.25rem]">
                   {summers} summers, one family, the same bay.
                 </h1>
                 <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-mid">
@@ -66,7 +66,7 @@ export default function Page() {
 
         {/* ---- When ------------------------------------------------------------------ */}
         <section className="bg-paper py-16 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="shell">
             <ol className="grid gap-8 sm:grid-cols-3 sm:gap-10" data-reveal-stagger>
               {STORY.map((s) => (
                 <li key={s.year}>
@@ -84,7 +84,7 @@ export default function Page() {
 
         {/* ---- The boat -------------------------------------------------------------- */}
         <section className="border-y border-ink/10 bg-paper-deep py-16 sm:py-24">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="shell">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
               <div className="lg:col-span-5" data-reveal>
                 <p className="label text-ink-soft">The boat</p>
@@ -162,7 +162,7 @@ export default function Page() {
 
         {/* ---- The crew -------------------------------------------------------------- */}
         <section className="bg-paper py-16 sm:py-20">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="shell">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-14" data-reveal>
               <div className="lg:col-span-6">
                 <p className="label text-ink-soft">Aboard</p>
@@ -203,19 +203,21 @@ export default function Page() {
 
         {/* ---- Out ------------------------------------------------------------------- */}
         <section className="border-t border-ink/10 bg-paper-warm py-14">
-          <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="shell">
             <p className="label text-ink-soft">Come out with us</p>
             <div className="mt-5 flex flex-wrap gap-3">
               {TOURS.map((t) => (
                 <Link
                   key={t.slug}
                   href={t.href}
-                  className={`${t.slug === HERO_TOUR.slug ? "enamel" : "engraved"} px-5 py-3 text-sm`}
+                  className="engraved px-5 py-3 text-sm"
                 >
                   {t.name} — from €{t.priceFrom}
                 </Link>
               ))}
-              <a href={CONTACT.phoneHref} className="engraved px-5 py-3 text-sm">
+              {/* The tours are here to browse; the call is the one thing worth doing from a
+                  story page, so it takes the red and it takes the last position. */}
+              <a href={CONTACT.phoneHref} className="enamel px-5 py-3 text-sm">
                 {CONTACT.phone}
               </a>
             </div>

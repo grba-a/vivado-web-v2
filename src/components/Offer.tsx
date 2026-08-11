@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HERO_TOUR, TOURS, bookingUrl, todayInZagreb, type Accent } from "@/lib/tours";
+import { TOURS, bookingUrl, todayInZagreb, type Accent } from "@/lib/tours";
 
 /**
  * What Vivado sells, on three cards, with the price on the card.
@@ -30,10 +30,10 @@ export function Offer() {
 
   return (
     <section id="tours" className="bg-paper py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="shell">
         <div data-reveal>
           <p className="label text-ink-soft">What we offer</p>
-          <h2 className="mt-4 max-w-2xl text-4xl sm:text-5xl">
+          <h2 className="mt-4 max-w-2xl text-4xl sm:text-5xl xl:max-w-3xl xl:text-6xl">
             Two days out and one way to get about.
           </h2>
         </div>
@@ -42,7 +42,7 @@ export function Offer() {
           {TOURS.map((t) => (
             <article
               key={t.slug}
-              className={`flex flex-col overflow-hidden rounded-sm border border-ink/10 ${TINT[t.accent]}`}
+              className={`flex flex-col overflow-hidden rounded-sm border border-ink/10 shadow-[0_10px_28px_-18px_rgba(28,42,51,0.35)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_18px_36px_-16px_rgba(28,42,51,0.32)] ${TINT[t.accent]}`}
             >
               <div className="relative aspect-[3/2] overflow-hidden">
                 <Image
@@ -85,9 +85,10 @@ export function Offer() {
                     href={bookingUrl(t.serviceId, today)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${
-                      t.slug === HERO_TOUR.slug ? "enamel" : "engraved"
-                    } px-5 py-2.5 text-sm`}
+                    /* All three identical. Reserving the red for the island cruise made the other
+                       two read as second-class, and every one of these is a thing a guest can buy
+                       right now — a card that cannot be acted on is a card that does not sell. */
+                    className="enamel px-5 py-2.5 text-sm"
                   >
                     Buy tickets
                   </a>

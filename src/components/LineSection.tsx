@@ -16,11 +16,11 @@ import { Timetable } from "./Timetable";
 export function LineSection() {
   return (
     <section id="line" className="border-y border-ink/10 bg-paper-warm py-16 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="shell">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5" data-reveal>
             <p className="label text-ink-soft">When they go</p>
-            <h2 className="mt-4 text-4xl sm:text-5xl">The road here is water.</h2>
+            <h2 className="mt-4 text-4xl sm:text-5xl xl:text-6xl">The road here is water.</h2>
             <p className="mt-5 text-[1.0625rem] leading-relaxed text-ink-mid">
               Five villages, one bay, and a boat between them all day long. No coach parks, no
               hairpins above the sea — you step aboard where you are staying and step off inside

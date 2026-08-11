@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { CONTACT, TOURS } from "@/lib/tours";
+import { TOURS } from "@/lib/tours";
 
 /**
  * The phone menu.
@@ -69,7 +69,7 @@ export function MobileNav() {
              style lies about it, so legibility must never depend on it. */
           className="absolute inset-x-0 top-full border-b border-ink/12 bg-paper shadow-[0_18px_40px_-24px_rgba(28,42,51,0.45)]"
         >
-          <nav className="mx-auto max-w-6xl px-5 py-3">
+          <nav className="shell py-3">
             <ul className="divide-y divide-ink/10">
               {links.map((l) => (
                 <li key={l.href}>
@@ -84,14 +84,6 @@ export function MobileNav() {
                 </li>
               ))}
             </ul>
-
-            <a
-              href={CONTACT.phoneHref}
-              onClick={() => setOpen(false)}
-              className="engraved mt-4 mb-2 w-full py-3 text-sm"
-            >
-              Call {CONTACT.phone}
-            </a>
           </nav>
         </div>
       )}

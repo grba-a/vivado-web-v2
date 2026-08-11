@@ -43,7 +43,7 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
     <main className="pb-20 md:pb-0">
       {/* ---- Hero ------------------------------------------------------------------- */}
       <section className={`${TINT[tour.accent]} border-b border-ink/10`}>
-        <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-14">
+        <div className="shell py-10 sm:py-14">
           <Link
             href="/"
             className="text-sm text-ink-mid transition-colors hover:text-ink"
@@ -54,7 +54,7 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
           <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-12">
             <div className="lg:col-span-6" data-intro-stagger>
               <p className={`label ${ACCENT_TEXT[tour.accent]}`}>{tour.kicker}</p>
-              <h1 className="mt-4 text-[2.5rem] sm:text-5xl lg:text-[3.5rem]">{tour.name}</h1>
+              <h1 className="mt-4 text-[2.5rem] sm:text-5xl lg:text-[3.5rem] xl:text-[4.25rem]">{tour.name}</h1>
               <p className="mt-5 max-w-xl text-lg text-ink-mid">{tour.tagline}</p>
               <p className="mt-5 max-w-xl leading-relaxed text-ink-mid">{tour.intro}</p>
             </div>
@@ -75,7 +75,7 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="shell">
         <div className="grid gap-12 py-14 lg:grid-cols-12 lg:gap-14 sm:py-16">
           {/* ---- The book box -------------------------------------------------------- */}
           <div className="lg:order-2 lg:col-span-4">
@@ -387,7 +387,7 @@ function Questions() {
 function OtherTours({ current }: { current: string }) {
   return (
     <section className="border-t border-ink/10 bg-paper-warm py-14">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
+      <div className="shell">
         <p className="label text-ink-soft">Also from your jetty</p>
         <div className="mt-5 flex flex-wrap gap-3">
           {TOURS.filter((t) => t.slug !== current).map((t) => (

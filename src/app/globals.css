@@ -106,6 +106,47 @@
 }
 
 @layer components {
+  /*
+    The shell — one measure for every section, so a change here moves the whole site at once
+    instead of seventeen separate containers drifting apart.
+
+    Wide (1920) rather than the 1152 it started at, because on a large monitor the old measure left
+    the film and the frames huddled in the middle of the screen. The side padding grows with the
+    viewport instead of staying fixed, so the content never runs to the bezel. Prose keeps its own
+    narrower `max-w-*` — the shell governs layout width, never line length, and a paragraph 1800px
+    wide would be unreadable no matter how much room there is for it.
+  */
+  .shell {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 120rem;
+    padding-inline: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .shell {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .shell {
+      padding-inline: 4rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .shell {
+      padding-inline: 5rem;
+    }
+  }
+
+  @media (min-width: 1600px) {
+    .shell {
+      padding-inline: 6.5rem;
+    }
+  }
+
   /* The small-caps line that carries labels: place names, "sailing next", est. 1988. */
   .label {
     font-size: 0.6875rem;

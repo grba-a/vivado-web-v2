@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { CONTACT, HERO_TOUR, TOURS, bookingUrl, todayInZagreb } from "@/lib/tours";
 import { MobileNav } from "./MobileNav";
+import { usePastHero } from "./usePastHero";
 
 /**
  * The logo is the client's one untouchable: it ships exactly as supplied, no recolour, no redraw.
@@ -17,55 +16,8 @@ import { MobileNav } from "./MobileNav";
  * already is, and repeating it here would cost the navigation its space.
  */
 
-/**
- * True once the hero is no longer behind the bar.
- *
- * Driven by an observer on the hero itself rather than a scroll offset, because the hero's height
- * depends on the viewport and on how the copy wraps — a hard-coded threshold would be wrong on
- * exactly the phone sizes that matter. Pages with no hero are solid from the start.
- */
-function useSolidHeader(): boolean {
-  /*
-    Starts transparent. On a page without a hero that means one frame with no hairline, over paper,
-    which is invisible; starting solid instead would flash a white bar across the film on the
-    homepage, which is not.
-  */
-  const [solid, setSolid] = useState(false);
-
-  /*
-    Keyed on the path because this bar lives in the layout and survives navigation. Without it, a
-    guest who reads the story page and comes back to the homepage would find a white bar sitting on
-    top of the film — the observer would still be watching a hero that had been removed from the
-    document.
-  */
-  const pathname = usePathname();
-
-  useEffect(() => {
-    const hero = document.querySelector("[data-hero]");
-
-    if (!hero) {
-      /* Committed on the next frame rather than during the effect, so this cannot cascade into a
-         second render pass while the browser is still laying the page out. */
-      const frame = requestAnimationFrame(() => setSolid(true));
-      return () => cancelAnimationFrame(frame);
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setSolid(!entry.isIntersecting),
-      /* Shrink the viewport by the bar's own height, so the switch happens exactly as the last
-         pixel of the hero passes under it. */
-      { rootMargin: "-72px 0px 0px 0px", threshold: 0 },
-    );
-    observer.observe(hero);
-
-    return () => observer.disconnect();
-  }, [pathname]);
-
-  return solid;
-}
-
 export function Header() {
-  const solid = useSolidHeader();
+  const solid = usePastHero();
   const today = todayInZagreb();
 
   return (
@@ -76,7 +28,7 @@ export function Header() {
           : "border-transparent bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-5 sm:h-18 sm:px-8">
+      <div className="shell flex h-16 items-center justify-between gap-6 sm:h-18">
         <Link href="/" className="shrink-0" aria-label="Vivado — home">
           <Image
             src="/vivado-logo.png"

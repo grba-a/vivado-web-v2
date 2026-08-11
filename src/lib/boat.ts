@@ -30,10 +30,14 @@ export const CARMEN = {
  *
  * Not invented and not chosen by us — these are the names guests themselves keep writing down.
  * Anabela is named in three of the nine reviews on Vivado's own Google widget, and again in a
- * Tripadvisor review; Domagoj, Ivo and Dino appear alongside her. A guest who remembers the host's
+ * Tripadvisor review; Domagoj, Ivo and Đino appear alongside her. A guest who remembers the host's
  * name is the strongest thing a page like this can point at.
+ *
+ * Đino is spelled "Dino" in the reviews. That is a guest reaching for the nearest key on their
+ * keyboard, not the man's name, and the client corrected it — so the diacritic stands. It is also
+ * why the fonts load `latin-ext`.
  */
-export const CREW = ["Anabela", "Domagoj", "Ivo", "Dino"] as const;
+export const CREW = ["Anabela", "Domagoj", "Ivo", "Đino"] as const;
 
 /** Milestones, all from the client's own about page. */
 export const STORY = [

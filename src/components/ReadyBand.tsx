@@ -29,10 +29,12 @@ export function ReadyBand() {
 
   return (
     <section className="border-t border-ink/10 bg-sea-mist py-14 sm:py-16">
-      <div className="mx-auto max-w-6xl px-5 sm:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-8" data-reveal>
+      <div className="shell">
+        {/* One centred column. This is the last thing on the page and the only question left on
+            it, so nothing sits beside anything — the eye runs straight down to the button. */}
+        <div className="mx-auto flex max-w-2xl flex-col items-center text-center" data-reveal>
           <div>
-            <h2 className="text-3xl sm:text-4xl">Ready when you are.</h2>
+            <h2 className="text-3xl sm:text-4xl xl:text-5xl">Ready when you are.</h2>
 
             <p className="tnum mt-4 text-[1.0625rem] text-ink-mid">
               {next ? (
@@ -60,7 +62,7 @@ export function ReadyBand() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a
               href={bookingUrl(HERO_TOUR.serviceId, todayInZagreb())}
               target="_blank"
