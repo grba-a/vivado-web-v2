@@ -203,6 +203,33 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.11'/%3E%3C/svg%3E");
   }
 
+  /*
+    The ticker under the hero.
+
+    Seamless because the track holds the entries twice and travels exactly half its own width, so
+    the frame it lands on is identical to the one it started from — no fade, no reset, no second
+    copy of the animation. It crawls rather than races: this is a quay board, not a stock ticker,
+    and at any speed a reader cannot follow it stops being information and becomes wallpaper.
+  */
+  .marquee-track {
+    animation: marquee 48s linear infinite;
+  }
+
+  /* Hovering stops it, so anyone who wants to actually read a row can. */
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   /* The live dot on the departure board — the only thing on the site that moves by itself. */
   .pulse-dot {
     animation: pulse-dot 2.4s var(--ease-out-quart) infinite;
@@ -240,6 +267,15 @@
 
   .pulse-dot {
     animation: none;
+  }
+
+  /* Stopped, but still reachable — the row becomes something you can scroll by hand. */
+  .marquee-track {
+    animation: none;
+  }
+
+  .marquee {
+    overflow-x: auto;
   }
 
   *,

@@ -110,6 +110,49 @@ function NoService() {
   );
 }
 
+/**
+ * One line instead of a card.
+ *
+ * The hero board is the best thing on the desktop page and the worst thing on a phone — stacked
+ * under two other panels it turned the first screen into a wall. This keeps the live time, which
+ * is the part that earns its place, and throws away the furniture around it.
+ */
+export function NextBoatLine() {
+  const { jetty } = useJetty();
+  const sailings = useLiveSailings(1);
+  const jettyName = getJetty(jetty).name;
+  const next = sailings?.[0];
+
+  if (routesFrom(jetty).length === 0) {
+    return (
+      <Link
+        href="/line"
+        className="flex items-center justify-between gap-3 rounded-sm border border-ink/12 bg-paper px-4 py-3 text-sm"
+      >
+        <span className="text-ink-mid">No line service at {jettyName}</span>
+        <span className="shrink-0 text-ink-soft">Timetable →</span>
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      href="/line"
+      className="flex items-center justify-between gap-3 rounded-sm border border-ink/12 bg-paper px-4 py-3"
+    >
+      <span className="tnum flex min-w-0 items-baseline gap-2 text-sm">
+        {next && !next.tomorrow && (
+          <span aria-hidden className="pulse-dot size-1.5 shrink-0 rounded-full bg-brand" />
+        )}
+        <span className="text-ink-soft">Next from {jettyName}</span>
+        <span className="font-medium text-ink">{next ? next.departure.time : "—"}</span>
+        {next && <span className="truncate text-ink-soft">{countdown(next)}</span>}
+      </span>
+      <span className="shrink-0 text-sm text-ink-soft">Timetable →</span>
+    </Link>
+  );
+}
+
 export function NextBoat({ count = 4, showAll = false }: { count?: number; showAll?: boolean }) {
   const { jetty } = useJetty();
   const sailings = useLiveSailings(count);

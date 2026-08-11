@@ -29,6 +29,7 @@ const PAGES = [
   ["elaphiti", "/tours/elaphiti-islands"],
   ["blue-cave", "/tours/blue-cave"],
   ["line", "/line"],
+  ["about", "/about"],
 ];
 
 const failures = [];
@@ -207,6 +208,144 @@ async function assertBooking(browser) {
   await context.close();
 }
 
+/* ---- The video is a luxury, and has to behave like one --------------------------------- */
+
+/** Reduced motion, data saver and slow connections must all leave the poster alone. */
+async function assertVideoGates(browser) {
+  const cases = [
+    {
+      label: "prefers-reduced-motion",
+      opts: { reducedMotion: "reduce" },
+      init: null,
+    },
+    {
+      label: "data saver on",
+      opts: {},
+      init: () =>
+        Object.defineProperty(navigator, "connection", {
+          value: { saveData: true, effectiveType: "4g" },
+          configurable: true,
+        }),
+    },
+    {
+      label: "3G connection",
+      opts: {},
+      init: () =>
+        Object.defineProperty(navigator, "connection", {
+          value: { saveData: false, effectiveType: "3g" },
+          configurable: true,
+        }),
+    },
+  ];
+
+  for (const c of cases) {
+    const context = await browser.newContext({
+      viewport: { width: 1440, height: 900 },
+      ...c.opts,
+    });
+    if (c.init) await context.addInitScript(c.init);
+    const page = await context.newPage();
+    await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+    await settle(page);
+
+    const hasVideo = await page.locator("section video").count();
+    const posterVisible = await page.locator('img[src*="hero-"]').first().isVisible();
+    check(hasVideo === 0 && posterVisible, `no video under ${c.label}`, `videos=${hasVideo}`);
+    await context.close();
+  }
+
+  /* And on a normal connection it must actually play, in both engines. */
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(3000);
+  const state = await page.evaluate(() => {
+    const v = document.querySelector("section video");
+    return v ? { paused: v.paused, t: v.currentTime, src: v.currentSrc.split("/").pop() } : null;
+  });
+  check(
+    !!state && !state.paused && state.t > 0.2 && state.src === "hero-wide.mp4",
+    "hero video autoplays the wide cut on desktop",
+    JSON.stringify(state),
+  );
+  await context.close();
+}
+
+/** The phone header navigates; the sticky bar sells. Neither should do the other's job. */
+async function assertMobileNav(browser) {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  const page = await context.newPage();
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await settle(page);
+
+  /* Count what a guest can actually see: the desktop button is in the DOM but display:none. */
+  const headerRed = await page.locator("header .enamel").evaluateAll(
+    (els) => els.filter((e) => e.getClientRects().length > 0).length,
+  );
+  check(headerRed === 0, "no buy button in the phone header", `visible: ${headerRed}`);
+
+  const burger = page.getByRole("button", { name: /open menu/i });
+  check((await burger.count()) === 1, "hamburger is present");
+
+  await burger.click();
+  await page.waitForTimeout(300);
+  const panel = page.locator("#mobile-nav");
+  check(await panel.isVisible(), "hamburger opens the panel");
+
+  for (const route of ["/tours/elaphiti-islands", "/tours/blue-cave", "/line", "/about"]) {
+    const n = await panel.locator(`a[href="${route}"]`).count();
+    check(n === 1, `panel reaches ${route}`);
+  }
+
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  check((await page.locator("#mobile-nav").count()) === 0, "Escape closes the panel");
+
+  await page.screenshot({ path: path.join(OUT, "assert-mobile-nav.png") });
+  await context.close();
+}
+
+/** The closing band must read the same clock and the same jetty as the board at the top. */
+async function assertReadyBand(browser) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await settle(page);
+  await scrollThrough(page);
+
+  const readBoth = () =>
+    page.evaluate(() => {
+      const row = document.querySelector("section li .font-display");
+      const band = [...document.querySelectorAll("h2")]
+        .find((h) => /ready when you are/i.test(h.textContent ?? ""))
+        ?.closest("div")?.textContent ?? "";
+      return { board: row?.textContent?.trim() ?? null, band };
+    });
+
+  const first = await readBoth();
+  check(
+    !!first.board && first.band.includes(first.board),
+    "closing band quotes the same next sailing as the board",
+    JSON.stringify(first).slice(0, 160),
+  );
+
+  /* Change the jetty and both must move together. */
+  await page.getByRole("button", { name: "Cavtat", exact: true }).first().click();
+  await page.waitForTimeout(500);
+  const after = await readBoth();
+  check(
+    after.band.includes("Cavtat") && after.board !== null,
+    "closing band follows the jetty picker",
+    JSON.stringify(after).slice(0, 160),
+  );
+
+  await context.close();
+}
+
 /* ---- Run ------------------------------------------------------------------------------- */
 
 const cr = await chromium.launch();
@@ -217,6 +356,9 @@ await shoot(cr, { label: "mobile", width: 390, height: 844, isMobile: true });
 console.log("\nAssertions");
 await assertBoard(cr);
 await assertBooking(cr);
+await assertVideoGates(cr);
+await assertMobileNav(cr);
+await assertReadyBand(cr);
 await cr.close();
 
 const wk = await webkit.launch();

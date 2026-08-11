@@ -235,5 +235,6 @@ export function countdown(s: NextSailing): string {
   if (s.inMinutes < 60) return `in ${s.inMinutes} min`;
   const h = Math.floor(s.inMinutes / 60);
   const m = s.inMinutes % 60;
-  return m === 0 ? `in ${h} h` : `in ${h} h ${m}`;
+  /* "in 1h 08" rather than "in 1 h 8" — a bare trailing digit reads as a typo. */
+  return m === 0 ? `in ${h}h` : `in ${h}h ${String(m).padStart(2, "0")}`;
 }

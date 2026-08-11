@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { TOURS, bookingUrl, todayInZagreb, type Accent } from "@/lib/tours";
+import { HERO_TOUR, TOURS, bookingUrl, todayInZagreb, type Accent } from "@/lib/tours";
 
 /**
  * What Vivado sells, on three cards, with the price on the card.
@@ -85,7 +85,9 @@ export function Offer() {
                     href={bookingUrl(t.serviceId, today)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="enamel px-5 py-2.5 text-sm"
+                    className={`${
+                      t.slug === HERO_TOUR.slug ? "enamel" : "engraved"
+                    } px-5 py-2.5 text-sm`}
                   >
                     Buy tickets
                   </a>

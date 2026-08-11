@@ -53,6 +53,11 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link href="/about" className="text-ink-mid transition-colors hover:text-ink">
+                  Our story
+                </Link>
+              </li>
             </ul>
           </div>
 
