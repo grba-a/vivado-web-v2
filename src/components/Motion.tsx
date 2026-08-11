@@ -53,9 +53,17 @@ export function Motion() {
       });
 
       gsap.utils.toArray<HTMLElement>("[data-reveal-stagger]").forEach((group) => {
+        /*
+          Rows of equal-height cards fade without the lift. Staggering `y` on items that sit side by
+          side means that for half a second they genuinely rest at different heights — and on a row
+          of cards whose whole job is to be comparable, that reads as a layout fault rather than as
+          an entrance. Stacked content keeps the lift, where the offset never invites a comparison.
+        */
+        const flat = group.dataset.revealStagger === "fade";
+
         gsap.fromTo(
           Array.from(group.children),
-          { opacity: 0, y: 24 },
+          { opacity: 0, y: flat ? 0 : 24 },
           {
             opacity: 1,
             y: 0,

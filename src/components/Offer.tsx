@@ -38,7 +38,7 @@ export function Offer() {
           </h2>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-3" data-reveal-stagger>
+        <div className="mt-12 grid gap-6 md:grid-cols-3" data-reveal-stagger="fade">
           {TOURS.map((t) => (
             <article
               key={t.slug}
@@ -80,7 +80,14 @@ export function Offer() {
                   ))}
                 </ul>
 
-                <div className="mt-7 flex flex-wrap items-center gap-2 pt-1">
+                {/*
+                  `mt-auto` pins this row to the bottom of the card rather than spacing it off the
+                  list above. The three cards do not hold the same amount of copy — only two have a
+                  price note, and "the crossing is the view" wraps onto a second line — so a fixed
+                  top margin left the three buttons at three different heights. Pinned to the
+                  bottom of cards the grid already stretches to equal height, they line up.
+                */}
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-8">
                   <a
                     href={bookingUrl(t.serviceId, today)}
                     target="_blank"

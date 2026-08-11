@@ -67,7 +67,7 @@ export default function Page() {
         {/* ---- When ------------------------------------------------------------------ */}
         <section className="bg-paper py-16 sm:py-20">
           <div className="shell">
-            <ol className="grid gap-8 sm:grid-cols-3 sm:gap-10" data-reveal-stagger>
+            <ol className="grid gap-8 sm:grid-cols-3 sm:gap-10" data-reveal-stagger="fade">
               {STORY.map((s) => (
                 <li key={s.year}>
                   <span className="tnum block font-display text-4xl leading-none text-ink-soft">
