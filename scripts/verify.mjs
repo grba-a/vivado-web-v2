@@ -62,12 +62,26 @@ async function settle(page) {
  * then come back to the top, before shooting.
  */
 async function scrollThrough(page) {
-  const height = await page.evaluate(() => document.body.scrollHeight);
   const step = await page.evaluate(() => window.innerHeight * 0.8);
-  for (let y = 0; y < height; y += step) {
+
+  /*
+    The height is re-read every step rather than measured once. These pages grow after the first
+    paint — the timetable only renders its route cards once the shared clock reports in — so a
+    single measurement taken up front stops the walk short and leaves the bottom of the page
+    untouched, which then shows up as "content is invisible" when the content was simply never
+    scrolled to.
+  */
+  let y = 0;
+  for (let guard = 0; guard < 200; guard += 1) {
+    const height = await page.evaluate(() => document.body.scrollHeight);
+    if (y >= height) break;
     await page.evaluate((to) => window.scrollTo(0, to), y);
     await page.waitForTimeout(160);
+    y += step;
   }
+
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForTimeout(400);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(350);
 }
