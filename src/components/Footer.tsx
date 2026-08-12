@@ -36,7 +36,12 @@ const SOCIAL = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-ink/10 bg-paper-deep">
+    /*
+      Deep, matching the hero plate and the booking bar. Those three are the only dark surfaces on the
+      site and they are not decoration: a single dark band floating in a light document reads as a
+      mistake, while a dark opening and a dark close read as a plate the paper is printed between.
+    */
+    <footer className="mt-auto bg-deep">
       <div className="shell py-14 sm:py-16">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
@@ -47,7 +52,7 @@ export function Footer() {
               height={40}
               className="h-9 w-auto"
             />
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-mid">
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-on-deep-muted">
               Boat tours and the daily line between Cavtat, Plat, Mlini, Srebreno and Dubrovnik.
               Family-run since {CONTACT.since}.
             </p>
@@ -60,7 +65,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="grid size-10 place-items-center rounded-full border border-ink/15 text-ink-mid transition-colors hover:border-ink/35 hover:text-ink"
+                    className="grid size-10 place-items-center rounded-full border border-white/20 text-on-deep-muted transition-colors hover:border-white/50 hover:text-on-deep"
                   >
                     <Mark />
                   </a>
@@ -70,20 +75,23 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="label text-ink-soft">Tours</h3>
+            <h3 className="label text-on-deep-muted">Tours</h3>
             <ul className="mt-4 space-y-2.5 text-sm">
               {TOURS.map((t) => (
                 <li key={t.slug}>
                   <Link
                     href={t.href}
-                    className="text-ink-mid transition-colors hover:text-ink"
+                    className="text-on-deep-muted transition-colors hover:text-on-deep"
                   >
                     {t.name}
                   </Link>
                 </li>
               ))}
               <li>
-                <Link href="/about" className="text-ink-mid transition-colors hover:text-ink">
+                <Link
+                  href="/about"
+                  className="text-on-deep-muted transition-colors hover:text-on-deep"
+                >
                   Our story
                 </Link>
               </li>
@@ -91,14 +99,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="label text-ink-soft">Find us</h3>
+            <h3 className="label text-on-deep-muted">Find us</h3>
             {/* The phone moved up here when the buttons came out — it is the one detail on this page
                 that a stranded guest actually needs, and it should not have left with them. */}
-            <address className="mt-4 space-y-2.5 text-sm not-italic text-ink-mid">
+            <address className="mt-4 space-y-2.5 text-sm text-on-deep-muted not-italic">
               <p>
                 <a
                   href={CONTACT.phoneHref}
-                  className="tnum transition-colors hover:text-ink"
+                  className="tnum transition-colors hover:text-on-deep"
                 >
                   {CONTACT.phone}
                 </a>
@@ -108,26 +116,47 @@ export function Footer() {
                   href={CONTACT.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-ink"
+                  className="transition-colors hover:text-on-deep"
                 >
                   WhatsApp
                 </a>
               </p>
               <p>
-                <a href={`mailto:${CONTACT.email}`} className="transition-colors hover:text-ink">
+                <a
+                  href={`mailto:${CONTACT.email}`}
+                  className="transition-colors hover:text-on-deep"
+                >
                   {CONTACT.email}
                 </a>
               </p>
-              <p>{CONTACT.address}</p>
+              {/*
+                The address is a link to the map rather than a line of text. Half the people reading a
+                footer on a phone are trying to work out how to physically get to the jetty, and the
+                written street name is one step short of that.
+              */}
+              <p>
+                <a
+                  href={CONTACT.maps}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-on-deep"
+                >
+                  {CONTACT.address}
+                </a>
+              </p>
             </address>
           </div>
         </div>
 
-        <div className="rule my-10" />
+        <div className="my-10 h-px bg-white/12" />
 
-        {/* Legal name to the left, how the booking is handled to the right. */}
-        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-xs text-ink-soft">
-          <p>{CONTACT.legalName}</p>
+        {/* Legal identity to the left, how the booking is handled to the right. */}
+        <div className="flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-xs text-on-deep-muted/80">
+          <p className="tnum">
+            {CONTACT.legalName}
+            <span className="mx-2 text-on-deep/25">·</span>
+            OIB {CONTACT.taxId}
+          </p>
           <p>Booking handled by ez-booker, with instant confirmation.</p>
         </div>
       </div>

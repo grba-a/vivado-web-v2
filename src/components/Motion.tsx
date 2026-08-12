@@ -22,22 +22,21 @@ export function Motion() {
     const mm = gsap.matchMedia();
 
     mm.add("(min-width: 768px)", () => {
-      /* The load reveal, under 600ms end to end. Past that, a selling page is just making the
-         visitor wait for branding — the lesson from v1, where the intro ran 4.4s. */
-      gsap
-        .timeline({ defaults: { ease: "power2.out" } })
-        .fromTo(
-          "[data-intro-stagger] > *",
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.45, stagger: 0.06 },
-        )
-        .fromTo(
-          "[data-intro]",
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 0.4 },
-          0.1,
-        );
+      /*
+        There is no load reveal any more, and removing it fixed a defect rather than trimming a
+        flourish.
 
+        The hero's heading, standfirst and buttons were animated with `fromTo(opacity: 0 → 1)`. That
+        runs from `useEffect`, which React fires *after* the first paint — so the sequence a visitor
+        actually saw was: headline painted in full, headline switched off, headline faded back over
+        450ms. A blink of the most important sentence on the site, worst on the slow phones where it
+        matters most, and it delayed legibility during the two seconds in which someone decides
+        whether to stay.
+
+        Above the fold there was nothing to reveal in the first place: a reveal is for content that
+        arrives on scroll. The picture still has an entrance — the video fades over its own poster
+        once there are frames to show — which is motion on the decoration rather than on the message.
+      */
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(
           el,
@@ -83,13 +82,6 @@ export function Motion() {
     /* Phones: fade only, no transforms, and reveals fire late enough down the viewport that a
        fast scroller never catches a half-empty screen. */
     mm.add("(max-width: 767px)", () => {
-      gsap.fromTo(
-        "[data-intro-stagger] > *",
-        { opacity: 0 },
-        { opacity: 1, duration: 0.4, stagger: 0.05 },
-      );
-      gsap.fromTo("[data-intro]", { opacity: 0 }, { opacity: 1, duration: 0.4, delay: 0.1 });
-
       gsap.utils
         .toArray<HTMLElement>("[data-reveal], [data-reveal-stagger] > *")
         .forEach((el) => {

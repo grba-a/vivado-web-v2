@@ -1,5 +1,6 @@
 import { Motion } from "@/components/Motion";
 import { Hero } from "@/components/Hero";
+import { TrustBar } from "@/components/TrustBar";
 import { LineSection } from "@/components/LineSection";
 import { Elaphiti } from "@/components/Elaphiti";
 import { Offer } from "@/components/Offer";
@@ -19,6 +20,10 @@ import { HERO_TOUR } from "@/lib/tours";
  *
  * Proof sits after the menu on purpose: a guest reads the prices, wants to know whether to trust
  * them, and only then cares who runs the boats.
+ *
+ * The trust bar is the seam. The hero is now a dark plate and everything below it is paper, and that
+ * handover needs something flat and factual in it — drop straight from a photograph into a sales
+ * section and the join reads as two pages stitched together.
  */
 export default function Home() {
   return (
@@ -27,6 +32,7 @@ export default function Home() {
       {/* Room for the mobile sticky bar so it never covers the last line of the footer. */}
       <main className="pb-20 md:pb-0">
         <Hero />
+        <TrustBar />
         <LineSection />
         <Elaphiti />
         <Offer />

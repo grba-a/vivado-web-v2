@@ -59,14 +59,21 @@ export function HeroTicker() {
   const track = [...entries, ...entries];
 
   return (
-    <div className="relative z-10 hidden border-t border-ink/10 bg-paper lg:block">
+    /*
+      Solid `bg-deep`, and the solidity is load-bearing rather than cosmetic: the label masks the
+      track sliding underneath it by painting its own background over it, so a translucent bar would
+      show the times ghosting through the words "Sailing next".
+    */
+    <div className="relative z-10 hidden border-t border-white/10 bg-deep lg:block">
       <div className="marquee flex items-center py-3">
         {/*
           The label sits outside the clipped area, not merely before it. Left inside a single
           overflow-hidden row it stays put while the track slides underneath it, and the two
           collide — the strip reads as broken text for half of every lap.
         */}
-        <span className="label z-10 shrink-0 bg-paper pr-6 pl-8 text-ink-soft">Sailing next</span>
+        <span className="label z-10 shrink-0 bg-deep pr-6 pl-8 text-on-deep-muted">
+          Sailing next
+        </span>
 
         <div className="flex-1 overflow-hidden">
 
@@ -85,14 +92,14 @@ export function HeroTicker() {
               className="tnum flex shrink-0 items-baseline gap-2 pr-8 text-sm whitespace-nowrap"
             >
               {e.live && (
-                <span aria-hidden className="pulse-dot size-1.5 rounded-full bg-brand" />
+                <span aria-hidden className="pulse-dot size-1.5 rounded-full bg-gold" />
               )}
-              <span className="font-medium text-ink">{e.jetty}</span>
-              <span className="text-ink">{e.time}</span>
-              <span className="text-ink-soft">→ {e.to}</span>
-              <span className="text-ink/30">·</span>
-              <span className="text-ink-soft">{e.note}</span>
-              <span aria-hidden className="pl-6 text-ink/20">
+              <span className="font-medium text-on-deep">{e.jetty}</span>
+              <span className="text-on-deep">{e.time}</span>
+              <span className="text-on-deep-muted">→ {e.to}</span>
+              <span className="text-on-deep/30">·</span>
+              <span className="text-on-deep-muted">{e.note}</span>
+              <span aria-hidden className="pl-6 text-on-deep/20">
                 /
               </span>
             </span>

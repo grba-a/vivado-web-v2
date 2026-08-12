@@ -123,23 +123,28 @@ export function HeroMedia() {
       )}
 
       {/*
-        The veil, and the whole reason this can be a full-bleed video on a light site.
+        Grain sits under the scrim, not over it.
 
-        The reflex here is a dark scrim so white text reads on top — that is what v1 did, and it
-        would turn this page back into v1. Instead the wash goes the other way: toward limestone,
-        the same paper the rest of the site is printed on. The footage ends up looking printed
-        rather than projected, and the panels sitting on it look like paper on paper.
+        It is a `multiply` blend, which means it only does anything to pixels that have brightness to
+        take away — over the deep end of the scrim it is mathematically invisible and merely costs a
+        composite. Underneath, it lands on the part of the frame that stays bright, which is exactly
+        where the footage needs tooth to look printed rather than streamed.
       */}
-      <div className="absolute inset-0 bg-paper/32" />
       <div className="grain absolute inset-0" />
 
       {/*
-        Paper bleeding in at the top and bottom. The top band is not decoration — the header sits
-        over the film with no background of its own, and the logo is red on a light mark, so it
-        needs the frame under it to stay pale whatever the footage is doing.
+        The plate.
+
+        The paper veil that used to be here is gone, and with it the flat 32% wash that took the
+        turquoise out of the whole picture in order to protect four lines of text in one corner. The
+        weight now runs along the diagonal the type occupies and clears before the right-hand quarter,
+        so the sea keeps its colour where nothing is written over it.
+
+        Also gone: the pale band that used to be printed across the top so the red logo had light
+        ground under it. The header's own state handles that now — over the hero it carries light type
+        and the mark reads against deep water, which is where a lighthouse belongs anyway.
       */}
-      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-paper via-paper/60 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-paper to-transparent" />
+      <div className="hero-scrim" />
     </div>
   );
 }

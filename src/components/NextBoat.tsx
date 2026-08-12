@@ -117,29 +117,40 @@ function NoService() {
  * under two other panels it turned the first screen into a wall. This keeps the live time, which
  * is the part that earns its place, and throws away the furniture around it.
  */
-export function NextBoatLine() {
+export function NextBoatLine({ tone = "paper" }: { tone?: "paper" | "deep" }) {
   const { jetty } = useJetty();
   const sailings = useLiveSailings(1);
   const jettyName = getJetty(jetty).name;
   const next = sailings?.[0];
 
+  /*
+    Two tones because this component now appears on both grounds: inside the dark hero plate on a
+    phone, and on paper further down the page. On the plate it is a frame rather than a card — a
+    filled paper box the size of this one would read as a second headline and pull rank on the
+    button above it.
+  */
+  const deep = tone === "deep";
+  const frame = deep
+    ? "border-white/20 bg-white/[0.06] backdrop-blur-sm"
+    : "border-ink/12 bg-paper";
+  const label = deep ? "text-on-deep-muted" : "text-ink-mid";
+  const quiet = deep ? "text-on-deep-muted/80" : "text-ink-soft";
+  const strong = deep ? "text-on-deep" : "text-ink";
+
   if (routesFrom(jetty).length === 0) {
     return (
       <Link
         href="/line"
-        className="flex items-center justify-between gap-3 rounded-sm border border-ink/12 bg-paper px-4 py-3 text-sm"
+        className={`flex items-center justify-between gap-3 rounded-sm border px-4 py-3 text-sm ${frame}`}
       >
-        <span className="text-ink-mid">No line service at {jettyName}</span>
-        <span className="shrink-0 text-ink-soft">Timetable →</span>
+        <span className={label}>No line service at {jettyName}</span>
+        <span className={`shrink-0 ${quiet}`}>Timetable →</span>
       </Link>
     );
   }
 
   return (
-    <Link
-      href="/line"
-      className="block rounded-sm border border-ink/12 bg-paper px-4 py-3.5"
-    >
+    <Link href="/line" className={`block rounded-sm border px-4 py-3.5 ${frame}`}>
       {/*
         Two rows, not one.
 
@@ -150,22 +161,25 @@ export function NextBoatLine() {
         of the board rather than a different thing wearing its data.
       */}
       <span className="flex items-center justify-between gap-3">
-        <span className="label text-ink-mid">Next from {jettyName}</span>
-        <span className="text-xs text-ink-soft">Full timetable →</span>
+        <span className={`label ${label}`}>Next from {jettyName}</span>
+        <span className={`text-xs ${quiet}`}>Full timetable →</span>
       </span>
 
       <span className="tnum mt-2.5 flex items-baseline gap-3">
         {next && !next.tomorrow && (
-          <span aria-hidden className="pulse-dot mb-1 size-1.5 shrink-0 rounded-full bg-brand" />
+          <span
+            aria-hidden
+            /* On the plate the red dot is the one saturated thing in a dark frame, which is more
+               attention than a status indicator has earned next to the buy button. */
+            className={`pulse-dot mb-1 size-1.5 shrink-0 rounded-full ${
+              deep ? "bg-gold" : "bg-brand"
+            }`}
+          />
         )}
-        <span className="font-display text-3xl leading-none text-ink">
+        <span className={`font-display text-3xl leading-none ${strong}`}>
           {next ? next.departure.time : "—"}
         </span>
-        {next && (
-          <span className="text-sm text-ink-mid">
-            {next.tomorrow ? "tomorrow" : countdown(next)}
-          </span>
-        )}
+        {next && <span className={`text-sm ${label}`}>{next.tomorrow ? "tomorrow" : countdown(next)}</span>}
       </span>
     </Link>
   );

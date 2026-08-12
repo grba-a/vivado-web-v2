@@ -242,13 +242,31 @@ export const getTour = (slug: string) => TOURS.find((t) => t.slug === slug);
 /** The hero tour. Everything on the homepage is arranged around selling this one. */
 export const HERO_TOUR = TOURS[0];
 
+/**
+ * The NAP — name, address, phone.
+ *
+ * Broken into parts rather than kept as one string because it has to be emitted three ways: as a
+ * readable address in the footer, as a `PostalAddress` in the structured data, and as a search query
+ * for the map link. It also has to match the Google Business Profile character for character; a
+ * business whose address differs between its own site and its profile is a business Google is less
+ * certain exists, and that certainty is what local ranking is made of.
+ */
 export const CONTACT = {
   phone: "+385 98 166 3161",
+  /** E.164, for `tel:` and for `telephone` in the schema. */
   phoneHref: "tel:+385981663161",
   whatsapp: "https://wa.me/385981663161",
   email: "vivadoinfo@gmail.com",
   legalName: "VIVADO, turistički obrt, vl. Nikša Kulišić",
-  address: "Šetalište Marka Marojice 16, Mlini",
+  street: "Šetalište Marka Marojice 16",
+  postalCode: "20207",
+  locality: "Mlini",
+  country: "HR",
+  /** One line, for the footer and anywhere a single string is wanted. */
+  address: "Šetalište Marka Marojice 16, 20207 Mlini, Croatia",
+  /** Croatian tax number. Required on the site by law and useful as an identifier in the schema. */
+  taxId: "16395734974",
+  maps: "https://www.google.com/maps/search/?api=1&query=Vivado%20Travel%20Agency%20Mlini",
   instagram: "https://www.instagram.com/vivadodubrovnik/",
   facebook: "https://www.facebook.com/vivado.mlini/",
   since: 1988,

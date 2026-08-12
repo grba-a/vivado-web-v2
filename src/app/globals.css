@@ -49,6 +49,23 @@
   --color-brand: #e7282e;
   --color-brand-deep: #c01c22;
 
+  /*
+    Deep water, for the three places the site goes dark: the hero plate, the booking bar and the
+    footer. Those three bookend the page, which is the whole reason a dark hero reads as a decision
+    rather than an accident — a single dark band floating in a light document looks like a mistake.
+
+    Not a second theme. Nothing between the hero and the footer changes colour; the body of the
+    site stays limestone, and the deep tone is used the way a printer uses a plate: for the
+    photograph and the two edges that frame it.
+  */
+  --color-deep: #08161f;
+  --color-deep-2: #10242f;
+  --color-on-deep: #f7f4ef;
+  --color-on-deep-muted: #b9c6ce;
+
+  /* Review stars. The only place gold appears, so it reads as a rating and not as decoration. */
+  --color-gold: #d8a02a;
+
   --font-display: var(--font-display-serif), ui-serif, Georgia, serif;
   --font-sans: var(--font-body-sans), ui-sans-serif, system-ui, sans-serif;
 
@@ -56,6 +73,7 @@
 
   /* Paper as bare channels, so a gradient can fade it out by alpha without hard-coding the hex. */
   --paper-channels: 251 248 243;
+  --deep-channels: 8 22 31;
 }
 
 @layer base {
@@ -212,48 +230,77 @@
   }
 
   /*
-    A bloom of paper instead of a panel.
+    The hero scrim: deep water laid across the film, heaviest where the type is.
 
-    The heading used to sit in a bordered card. A card is a hard edge laid over a photograph, and on
-    a hero whose whole idea is that the film looks *printed* on the same paper as the site, that edge
-    fights the illusion. This dissolves instead: nearly opaque where the type is, gone by the edges,
-    the same move already used along the top and bottom of the section.
+    This replaces a paper-coloured bloom that sat under the heading. That version was measured and it
+    passed — 9.8:1 on the heading, 5.1:1 on the standfirst — so it was not changed to fix a failure.
+    It was changed because it is *fragile in the wrong direction*: a light wash has to be strong
+    enough to beat the brightest thing the footage can put underneath it, and this client will swap
+    the footage. Bright water against light type is the case with no headroom. Inverting it means the
+    dangerous frame becomes the dark one, and dark frames only ever help white type.
 
-    Alpha, not `color-mix`, so the falloff is predictable — mixing a colour toward `transparent`
-    interpolates the colour channels too and the tail turns grey rather than simply thinning.
+    Directional, not flat. A scrim across the whole frame is what a light veil already did wrong: it
+    lifted the sea's colour out of the entire picture to protect four lines of text in one corner.
+    This runs the weight along the diagonal the type occupies and clears completely before the right
+    third, so the water there keeps the turquoise that is the actual thing being sold.
   */
-  .wash {
+  .hero-scrim {
     position: absolute;
-    /*
-      Tight to the type. Narrowing the box and softening the alpha pull against each other — the
-      thinner the box, the closer the outer characters sit to the feathered edge — so the answer is a
-      *shorter* feather rather than a wider one. A 16px blur keeps the softness and spends about
-      30px outside the text instead of 70.
-    */
-    inset: -1rem -1.25rem -1.1rem;
+    inset: 0;
     pointer-events: none;
+    background:
+      /*
+        The stops are placed against measured pixels, not by eye, and the first attempt was wrong in a
+        way worth recording: the fade began at 42% while the standfirst still had glyphs at 57%, so the
+        last third of that sentence sat on ground of rgb(126,133,138) and measured 2.15:1. The heading
+        survived it — 62px type only needs 3:1 — which is exactly why this cannot be judged by looking.
 
-    /*
-      A blurred rectangle, not a radial gradient.
+        Full weight now runs to 48% and the fade is spent between there and 82%. The prose was narrowed
+        in the same pass rather than pushing this any further right, because a scrim heavy enough to
+        cover a 768px measure would have taken the colour out of the whole frame — the failure the
+        light veil had before it.
+      */
+      linear-gradient(
+        100deg,
+        rgb(var(--deep-channels) / 0.9) 0%,
+        rgb(var(--deep-channels) / 0.84) 48%,
+        rgb(var(--deep-channels) / 0.4) 68%,
+        rgb(var(--deep-channels) / 0) 82%
+      ),
+      /* A foot of shadow along the bottom edge, so the ticker sits on ground rather than on film. */
+      linear-gradient(
+        to top,
+        rgb(var(--deep-channels) / 0.55) 0%,
+        rgb(var(--deep-channels) / 0) 28%
+      );
+  }
 
-      The radial version was the obvious reach and it was wrong twice over: a long linear alpha ramp
-      bands visibly across a photograph, and an ellipse large enough to cover a wide block of type
-      inevitably bleeds far past it — it lightened half the frame to protect four lines of text.
+  /*
+    Phones get a vertical ramp instead of a diagonal one. There is no right-hand third to protect on a
+    390px screen — the type crosses the full width — so the weight goes under the words and the picture
+    keeps the band above them.
 
-      Blurring a solid box instead gives a shape that follows the content and feathers only at the
-      edge, so the film stays legible right up to where the words start. `filter` is safe here in a
-      way `backdrop-filter` is not: WebKit paints element filters reliably, and the value is static
-      so it composites once rather than every frame.
-    */
-    border-radius: 1.25rem;
-    /*
-      0.8, not opaque. The client wants the film readable through the bloom, and this is the floor
-      that keeps it legible: over the darkest water in the shot, ink-mid body copy lands at about
-      4.9:1, still clear of the 4.5:1 needed for normal text. Below roughly 0.75 the paragraph — the
-      lightest, smallest text on the screen — starts to fail, so this is measured rather than picked.
-    */
-    background: rgb(var(--paper-channels) / 0.72);
-    filter: blur(16px);
+    How high the weight has to reach is set by how tall the copy is, and that was the first version's
+    mistake. Six stacked elements — eyebrow, heading, standfirst, button, rating, microcopy — occupy
+    everything from 30% of the screen downwards, so a ramp that was still clearing at 70% left the
+    eyebrow on ground of rgb(175,179,182) and measured 1.21:1. Unreadable, and invisible to inspection
+    because on a phone you tend to check the heading.
+
+    So the plate now holds to 76% and the film reads through the top fifth. That is less picture than a
+    designer would want and exactly as much as fits: a 390px screen cannot carry a view and six lines
+    of type, and the type is what sells.
+  */
+  @media (max-width: 1023px) {
+    .hero-scrim {
+      background: linear-gradient(
+        to top,
+        rgb(var(--deep-channels) / 0.94) 0%,
+        rgb(var(--deep-channels) / 0.9) 60%,
+        rgb(var(--deep-channels) / 0.84) 76%,
+        rgb(var(--deep-channels) / 0.25) 92%,
+        rgb(var(--deep-channels) / 0) 100%
+      );
+    }
   }
 
   /* Secondary action. Reads as engraved into the paper rather than sitting on top of it. */
@@ -274,6 +321,30 @@
   .engraved:hover {
     background-color: color-mix(in oklab, var(--color-ink) 5%, transparent);
     border-color: color-mix(in oklab, var(--color-ink) 38%, transparent);
+  }
+
+  /*
+    The same control on the deep plate. It exists because the red button has to be the only filled
+    thing in any one viewport — so every other action in the hero and the booking bar has to be able
+    to hold its own as an outline, and an ink-coloured border is invisible down here.
+  */
+  .engraved-deep {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.32);
+    color: var(--color-on-deep);
+    font-weight: 500;
+    transition:
+      background-color 140ms var(--ease-out-quart),
+      border-color 140ms var(--ease-out-quart);
+  }
+
+  .engraved-deep:hover {
+    background-color: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.6);
   }
 }
 

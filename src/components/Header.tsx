@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { CONTACT, HERO_TOUR, TOURS, bookingUrl, todayInZagreb } from "@/lib/tours";
+import { CONTACT, HERO_TOUR, TOURS } from "@/lib/tours";
+import { BookLink } from "./BookLink";
 import { MobileNav } from "./MobileNav";
 import { usePastHero } from "./usePastHero";
 
@@ -14,11 +15,15 @@ import { usePastHero } from "./usePastHero";
  * of the page; once the hero has scrolled away it takes on paper and a hairline. On phones the row
  * is only the logo and a menu — the buy button lives in the sticky bar at the bottom where a thumb
  * already is, and repeating it here would cost the navigation its space.
+ *
+ * Two things changed when the hero went dark. The row now has to invert with it, so the nav reads in
+ * light type over the plate and in ink once it lands on paper. And `Buy tickets` lost its red fill:
+ * with a red booking button in the hero as well, there were two identical calls to action a hand's
+ * width apart, and a viewport containing two primary actions contains none.
  */
 
 export function Header() {
   const solid = usePastHero();
-  const today = todayInZagreb();
 
   return (
     <header
@@ -45,30 +50,51 @@ export function Header() {
             <Link
               key={t.slug}
               href={t.href}
-              className="text-ink-mid transition-colors hover:text-ink"
+              className={
+                solid
+                  ? "text-ink-mid transition-colors hover:text-ink"
+                  : "text-on-deep-muted transition-colors hover:text-on-deep"
+              }
             >
               {t.name}
             </Link>
           ))}
-          <Link href="/about" className="text-ink-mid transition-colors hover:text-ink">
+          <Link
+            href="/about"
+            className={
+              solid
+                ? "text-ink-mid transition-colors hover:text-ink"
+                : "text-on-deep-muted transition-colors hover:text-on-deep"
+            }
+          >
             Our story
           </Link>
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <a href={CONTACT.phoneHref} className="engraved hidden px-4 py-2 text-sm md:inline-flex">
+          <a
+            href={CONTACT.phoneHref}
+            className={`hidden px-4 py-2 text-sm md:inline-flex ${
+              solid ? "engraved" : "engraved-deep"
+            }`}
+          >
             Call us
           </a>
-          {/* Deep-linked to today's date so the guest lands on a calendar that already knows
-              which day they mean. */}
-          <a
-            href={bookingUrl(HERO_TOUR.serviceId, today)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="enamel hidden px-5 py-2 text-sm md:inline-flex"
+          {/*
+            An outline, not the enamel. It is still the same words and the same destination — the
+            brief is firm that a product's call to action must read identically everywhere — but the
+            fill belongs to whichever button is the primary action on the screen you are looking at,
+            and in the hero that is the one below the headline.
+          */}
+          <BookLink
+            serviceId={HERO_TOUR.serviceId}
+            cta="nav"
+            className={`hidden px-5 py-2 text-sm md:inline-flex ${
+              solid ? "engraved" : "engraved-deep"
+            }`}
           >
             Buy tickets
-          </a>
+          </BookLink>
           <MobileNav />
         </div>
       </div>
