@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Our story",
   description:
     "Vivado is Carmen and Nikša Kulišić and their children Victoria, Vlatko and Domagoj — one boat out of Mlini in 1988, and the whole bay of Župa dubrovačka since. Carmen herself is a 22-metre trabakula the family rebuilt plank by plank.",
+  alternates: { canonical: "/about" },
 };
 
 /**
@@ -36,7 +37,7 @@ export default function Page() {
 
             <div className="mt-8 grid items-center gap-10 lg:grid-cols-12 lg:gap-14">
               <div className="lg:col-span-7" data-intro-stagger>
-                <p className="label text-ink-soft">Who takes you out</p>
+                <p className="label text-ink-mid">Who takes you out</p>
                 <h1 className="mt-4 text-[2.5rem] sm:text-5xl lg:text-[3.5rem] xl:text-[4.25rem]">
                   {summers} summers, one family, the same bay.
                 </h1>
@@ -87,7 +88,7 @@ export default function Page() {
           <div className="shell">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
               <div className="lg:col-span-5" data-reveal>
-                <p className="label text-ink-soft">The boat</p>
+                <p className="label text-ink-mid">The boat</p>
                 <h2 className="mt-4 text-4xl sm:text-5xl">
                   Carmen was built to carry cargo. We rebuilt her plank by plank.
                 </h2>
@@ -107,7 +108,7 @@ export default function Page() {
                 <dl className="mt-9 flex flex-wrap gap-x-12 gap-y-6">
                   {CARMEN.specs.map((s) => (
                     <div key={s.label}>
-                      <dt className="label text-ink-soft">{s.label}</dt>
+                      <dt className="label text-ink-mid">{s.label}</dt>
                       <dd className="tnum mt-2 font-display text-3xl leading-none">{s.value}</dd>
                     </div>
                   ))}
@@ -165,7 +166,7 @@ export default function Page() {
           <div className="shell">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-14" data-reveal>
               <div className="lg:col-span-6">
-                <p className="label text-ink-soft">Aboard</p>
+                <p className="label text-ink-mid">Aboard</p>
                 <h2 className="mt-4 text-3xl sm:text-4xl">
                   Guests tend to come back knowing the crew by name.
                 </h2>
@@ -204,7 +205,7 @@ export default function Page() {
         {/* ---- Out ------------------------------------------------------------------- */}
         <section className="border-t border-ink/10 bg-paper-warm py-14">
           <div className="shell">
-            <p className="label text-ink-soft">Come out with us</p>
+            <p className="label text-ink-mid">Come out with us</p>
             <div className="mt-5 flex flex-wrap gap-3">
               {TOURS.map((t) => (
                 <Link

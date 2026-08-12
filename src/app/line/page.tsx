@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   title: "Boat timetable — Cavtat, Mlini, Srebreno, Dubrovnik",
   description:
     "The full Vivado boat timetable across the bay of Župa dubrovačka. More than fifty sailings a day between Cavtat, Mlini, Srebreno and Dubrovnik's Old Town port, from €10 one way. Crossings take 20 to 45 minutes.",
+  alternates: { canonical: "/line" },
 };
 
 export default function Page() {

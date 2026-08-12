@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PRICE_LINE } from "@/lib/schedule";
-import { bookingUrl, todayInZagreb } from "@/lib/tours";
+import { LINE_TOUR } from "@/lib/tours";
+import { BookLink } from "./BookLink";
 import { JettyPicker } from "./JettyPicker";
 import { NextBoat, SeasonNote } from "./NextBoat";
 import { Timetable } from "./Timetable";
@@ -19,7 +20,7 @@ export function LineSection() {
       <div className="shell">
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
           <div className="lg:col-span-5" data-reveal>
-            <p className="label text-ink-soft">The daily line</p>
+            <p className="label text-ink-mid">The daily line</p>
             <h2 className="mt-4 text-4xl sm:text-5xl xl:text-6xl">The road here is water.</h2>
             <p className="mt-5 text-[1.0625rem] leading-relaxed text-ink-mid">
               Five villages, one bay, and a boat between them all day long. No coach parks, no
@@ -29,7 +30,7 @@ export function LineSection() {
 
             <div className="mt-7 flex items-end gap-6">
               <div>
-                <span className="label block text-ink-soft">One way</span>
+                <span className="label block text-ink-mid">One way</span>
                 <span className="tnum mt-1 block font-display text-4xl leading-none">
                   €{PRICE_LINE}
                 </span>
@@ -42,15 +43,24 @@ export function LineSection() {
             </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href={bookingUrl(306, todayInZagreb())}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="enamel px-5 py-2.5 text-sm"
+              {/*
+                An outline, not the enamel, and this is a pricing decision rather than a visual one. A
+                €10 crossing and a €55 day out cannot both be the primary action on a page: whichever
+                one wears the filled button is the one most people will click, and the margin on the
+                island day is several times the whole fare of a line ticket. So the line is sold
+                plainly and the fill is spent one section further down.
+              */}
+              <BookLink
+                serviceId={LINE_TOUR.serviceId}
+                cta="line_section"
+                className="engraved px-5 py-2.5 text-sm"
               >
-                Buy tickets
-              </a>
-              <Link href="/line" className="engraved px-5 py-2.5 text-sm">
+                {LINE_TOUR.cta}
+              </BookLink>
+              <Link
+                href="/line"
+                className="px-2 py-2.5 text-sm text-ink-mid underline decoration-ink/25 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/60"
+              >
                 Full timetable
               </Link>
             </div>

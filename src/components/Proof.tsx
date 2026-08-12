@@ -1,53 +1,68 @@
+import { RATINGS, REVIEW_LINKS } from "@/lib/reviews";
+
 /**
  * The reason to believe any of the above.
  *
- * The nearest competitor leads with "4.9★" and "free cancellation 24h" while this site had nothing
- * of the kind — and the research on this industry is blunt about it: reviews decide the booking.
- * The proof turned out to already exist, publicly, on Vivado's own homepage, where a Trustindex
- * widget reports 88 Google reviews and rates them "Excellent".
+ * The nearest competitor leads with a rating and a cancellation promise while this site had nothing of
+ * the kind, and the research on this industry is blunt: reviews decide the booking.
  *
- * So rather than hand-picking quotes into our own markup, this section is a frame for that widget.
- * It is the better answer on every count: it stays current without anyone editing this file, it
- * carries Google's own branding so a guest can see it is not us quoting ourselves, and it takes
- * the editorial decision about which reviews to show out of our hands entirely.
+ * It is a frame for Vivado's own Trustindex widget rather than quotes typed into our markup, and that
+ * is the better answer on every count. It stays current without anyone editing this file. It carries
+ * Google's own branding, so a guest can see it is not us quoting ourselves. It takes the choice of
+ * which reviews to show out of our hands. And it sidesteps the permissions question entirely — the
+ * brief proposes naming individual reviewers, which needs their consent, while the widget is already
+ * licensed to display them.
  *
- * The embed itself is not wired up yet. Vivado's page loads Trustindex through a WordPress plugin,
- * so the markup arrives pre-rendered with no account or widget id exposed in it — the snippet has
- * to come from the client's own Trustindex dashboard. Until it does, the frame states plainly what
- * belongs here instead of pretending with invented stars.
+ * The embed is not wired up yet. Vivado's page loads Trustindex through a WordPress plugin, so the
+ * markup arrives pre-rendered with no account or widget id in it — the snippet has to come from the
+ * client's own dashboard. Until it does, the frame says plainly what belongs here rather than filling
+ * the space with invented stars.
+ *
+ * The review count is no longer written into this file. It said 88, read off that widget, while the
+ * research brief says 263 from the Google profile. One of those is the profile total, nobody has checked
+ * which, so the number now comes from `reviews.ts` and simply does not appear until it is verified. A
+ * count a guest can disprove in one click is worse than no count.
  */
-
-
-
-/** Public profile, so the count is verifiable even before the widget lands. */
-const GOOGLE_PROFILE =
-  "https://www.google.com/maps/search/?api=1&query=Vivado%20Travel%20Agency%20Mlini";
-
 export function Proof() {
+  const { google } = RATINGS;
+
   return (
-    <section className="border-t border-ink/10 bg-paper py-14 sm:py-18">
+    <section id="reviews" className="border-t border-ink/10 bg-paper py-14 sm:py-18">
       <div className="shell">
         <div className="flex flex-wrap items-end justify-between gap-6" data-reveal>
           <div>
-            <p className="label text-ink-soft">What guests say</p>
+            <p className="label text-ink-mid">What guests say</p>
             <p className="mt-3 text-2xl text-ink">
-              Rated <span className="font-display text-3xl">Excellent</span> on Google
+              {google ? (
+                <>
+                  <span aria-hidden className="text-gold">
+                    ★
+                  </span>{" "}
+                  <span className="tnum font-display text-3xl">{google.value}</span> from{" "}
+                  <span className="tnum">{google.count}</span> Google reviews
+                </>
+              ) : (
+                <>
+                  Rated <span className="font-display text-3xl">Excellent</span> on Google
+                </>
+              )}
             </p>
           </div>
 
           <a
-            href={GOOGLE_PROFILE}
+            href={REVIEW_LINKS.google}
             target="_blank"
             rel="noopener noreferrer"
+            data-cta="reviews_google"
             className="tnum text-sm text-ink-mid underline decoration-ink/25 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/60"
           >
-            Read all 88 reviews
+            {google ? `Read all ${google.count} reviews on Google` : "Read the reviews on Google"}
           </a>
         </div>
 
         {/*
-          Sized, not empty. A placeholder with no height collapses the section and the page reflows
-          the day the widget is pasted in — so the frame already holds the room the real thing needs.
+          Sized, not empty. A placeholder with no height collapses the section and the page reflows the
+          day the widget is pasted in — so the frame already holds the room the real thing needs.
         */}
         <div
           id="google-reviews"
@@ -55,7 +70,7 @@ export function Proof() {
           data-reveal
         >
           <div className="max-w-md text-center">
-            <p className="label text-ink-soft">Google reviews</p>
+            <p className="label text-ink-mid">Google reviews</p>
             <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink-mid">
               The live Trustindex widget goes here. Paste the embed from the Vivado Trustindex
               dashboard and it will fill this frame — no other change needed.

@@ -83,7 +83,7 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
               <div className="rounded-sm border border-ink/12 bg-paper p-6 shadow-[0_8px_28px_-16px_rgba(28,42,51,0.2)]">
                 <div className="flex items-end justify-between gap-4">
                   <div>
-                    <span className="label block text-ink-soft">From</span>
+                    <span className="label block text-ink-mid">From</span>
                     <span className="tnum mt-1 block font-display text-4xl leading-none">
                       €{tour.priceFrom}
                     </span>
@@ -207,9 +207,9 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
                 <table className="w-full text-left text-[0.9375rem]">
                   <thead className="bg-paper-warm">
                     <tr>
-                      <th className="label px-4 py-3 font-medium text-ink-soft">Jetty</th>
-                      <th className="label px-4 py-3 font-medium text-ink-soft">Leaves</th>
-                      <th className="label px-4 py-3 font-medium text-ink-soft">Back</th>
+                      <th className="label px-4 py-3 font-medium text-ink-mid">Jetty</th>
+                      <th className="label px-4 py-3 font-medium text-ink-mid">Leaves</th>
+                      <th className="label px-4 py-3 font-medium text-ink-mid">Back</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -254,7 +254,7 @@ export function TourPage({ tour, children }: { tour: Tour; children?: React.Reac
                   />
                 </div>
                 <div>
-                  <p className="label text-ink-soft">Your jetty</p>
+                  <p className="label text-ink-mid">Your jetty</p>
                   <p className="mt-2 text-xl">{chosen.name}</p>
                   <p className="mt-1.5 text-[0.9375rem] text-ink-mid">{chosen.where}</p>
                   <p className="mt-3 text-sm text-ink-soft">
@@ -388,7 +388,7 @@ function OtherTours({ current }: { current: string }) {
   return (
     <section className="border-t border-ink/10 bg-paper-warm py-14">
       <div className="shell">
-        <p className="label text-ink-soft">Also from your jetty</p>
+        <p className="label text-ink-mid">Also from your jetty</p>
         <div className="mt-5 flex flex-wrap gap-3">
           {TOURS.filter((t) => t.slug !== current).map((t) => (
             <Link key={t.slug} href={t.href} className="engraved px-5 py-3 text-sm">

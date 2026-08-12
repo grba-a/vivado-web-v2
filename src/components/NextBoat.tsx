@@ -194,7 +194,7 @@ export function NextBoat({ count = 4, showAll = false }: { count?: number; showA
   return (
     <div>
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="label text-ink-soft">Next from {jettyName}</h3>
+        <h3 className="label text-ink-mid">Next from {jettyName}</h3>
         {showAll && (
           <Link
             href="/line"

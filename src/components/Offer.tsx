@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { TOURS, bookingUrl, todayInZagreb, type Accent } from "@/lib/tours";
+import { TOURS, type Accent } from "@/lib/tours";
+import { BookLink } from "./BookLink";
 
 /**
  * What Vivado sells, on three cards, with the price on the card.
@@ -26,13 +27,11 @@ const TINT: Record<Accent, string> = {
 };
 
 export function Offer() {
-  const today = todayInZagreb();
-
   return (
     <section id="tours" className="bg-paper py-16 sm:py-24">
       <div className="shell">
         <div data-reveal>
-          <p className="label text-ink-soft">All three tours</p>
+          <p className="label text-ink-mid">All three tours</p>
           {/* A menu, not a third pitch. The line and the islands were each argued for above; here
               they only have to be comparable. */}
           <h2 className="mt-4 max-w-2xl text-4xl sm:text-5xl xl:max-w-3xl xl:text-6xl">
@@ -90,17 +89,25 @@ export function Offer() {
                   bottom of cards the grid already stretches to equal height, they line up.
                 */}
                 <div className="mt-auto flex flex-wrap items-center gap-2 pt-8">
-                  <a
-                    href={bookingUrl(t.serviceId, today)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    /* All three identical. Reserving the red for the island cruise made the other
-                       two read as second-class, and every one of these is a thing a guest can buy
-                       right now — a card that cannot be acted on is a card that does not sell. */
-                    className="enamel px-5 py-2.5 text-sm"
+                  {/*
+                    Outlines, and all three still identical to each other.
+
+                    They were filled red, which put three primary actions in one viewport — and a screen
+                    with three primaries has none. Reserving the fill for one card was the other option
+                    and it is worse: this section is a comparison table, so ranking the products here
+                    would answer the question the table exists to let the guest answer. The fill lives
+                    one section above, on the island day, and again in the closing band.
+
+                    The words come from `t.cta` so each product is asked for in the same language here
+                    as it is in the hero, the feature block and its own page.
+                  */}
+                  <BookLink
+                    serviceId={t.serviceId}
+                    cta={`offer_${t.slug}`}
+                    className="engraved px-5 py-2.5 text-sm"
                   >
-                    Buy tickets
-                  </a>
+                    {t.cta}
+                  </BookLink>
                   <Link
                     href={t.href}
                     className="px-2 py-2.5 text-sm text-ink-mid underline decoration-ink/25 underline-offset-4 transition-colors hover:text-ink hover:decoration-ink/60"

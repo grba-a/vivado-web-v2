@@ -103,7 +103,14 @@ export function Hero() {
                 searched thing, and leading with it would sell the €10 ticket to someone who came
                 ready to spend €55.
               */}
-              <p className="tnum mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-on-deep-muted sm:mt-7 sm:text-lg xl:max-w-3xl xl:text-xl">
+              {/*
+                Capped at `2xl`, not `3xl`. The wider measure put glyphs at 57% of the viewport, where
+                the scrim has begun to clear, and the last third of the sentence measured 2.15:1. Two
+                reasons not to answer that by darkening further: a scrim heavy enough to cover 768px of
+                type takes the colour out of the whole frame, and 768px of 20px text is over a hundred
+                characters a line — too long to read comfortably whatever it sits on.
+              */}
+              <p className="tnum mt-5 max-w-xl text-[1.0625rem] leading-relaxed text-on-deep-muted sm:mt-7 sm:text-lg xl:max-w-2xl xl:text-xl">
                 From €{HERO_TOUR.priceFrom} with lunch and wine aboard. Or €{PRICE_LINE} across the
                 bay on the daily line. Run by the same family for thirty-eight summers.
               </p>

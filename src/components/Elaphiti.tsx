@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HERO_TOUR, bookingUrl, todayInZagreb } from "@/lib/tours";
+import { HERO_TOUR } from "@/lib/tours";
+import { BookLink } from "./BookLink";
 
 /**
  * The island day, given room.
@@ -16,7 +17,6 @@ import { HERO_TOUR, bookingUrl, todayInZagreb } from "@/lib/tours";
  */
 export function Elaphiti() {
   const t = HERO_TOUR;
-  const today = todayInZagreb();
 
   return (
     <section id="elaphiti" className="bg-paper py-16 sm:py-24">
@@ -38,7 +38,7 @@ export function Elaphiti() {
 
             <div className="mt-8 flex flex-wrap items-end gap-x-10 gap-y-4">
               <div>
-                <span className="label block text-ink-soft">From</span>
+                <span className="label block text-ink-mid">From</span>
                 <span className="tnum mt-1.5 block font-display text-5xl leading-none text-ink">
                   €{t.priceFrom}
                 </span>
@@ -62,14 +62,18 @@ export function Elaphiti() {
             </ul>
 
             <div className="mt-9 flex flex-wrap items-center gap-3">
-              <a
-                href={bookingUrl(t.serviceId, today)}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/*
+                The filled red on this screen. This is the section the whole page is arranged to sell —
+                several times the margin of a line ticket — so it gets the one solid button in view, and
+                the comparison grid below it carries outlines instead.
+              */}
+              <BookLink
+                serviceId={t.serviceId}
+                cta="elaphiti_section"
                 className="enamel px-6 py-3 text-[0.9375rem]"
               >
-                Buy tickets
-              </a>
+                {t.cta}
+              </BookLink>
               <Link href={t.href} className="engraved px-5 py-3 text-[0.9375rem]">
                 See the whole day
               </Link>
@@ -109,7 +113,7 @@ export function Elaphiti() {
 
         {/* ---- How the day runs ----------------------------------------------------- */}
         <div className="mt-14 border-t border-ink/10 pt-10">
-          <p className="label text-ink-soft">How the day runs</p>
+          <p className="label text-ink-mid">How the day runs</p>
           <ol className="mt-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-5" data-reveal-stagger="fade">
             {t.itinerary.map((step) => (
               <li key={step.title}>

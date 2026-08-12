@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify": "node scripts/verify.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "encode:hero": "node scripts/encode-hero.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",

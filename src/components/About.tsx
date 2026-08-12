@@ -33,7 +33,7 @@ export function About() {
           </div>
 
           <div className="lg:col-span-8">
-            <p className="label text-ink-soft">Who takes you out</p>
+            <p className="label text-ink-mid">Who takes you out</p>
             <h2 className="mt-4 text-3xl sm:text-4xl xl:text-5xl">
               {summers} summers, one family, the same bay.
             </h2>
@@ -51,7 +51,7 @@ export function About() {
                   ["Sailings a day", "50+"],
                 ].map(([k, v]) => (
                   <div key={k}>
-                    <dt className="label text-ink-soft">{k}</dt>
+                    <dt className="label text-ink-mid">{k}</dt>
                     <dd className="tnum mt-2 font-display text-3xl leading-none">{v}</dd>
                   </div>
                 ))}

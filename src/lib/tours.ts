@@ -49,6 +49,14 @@ export type Tour = {
   href: string;
   serviceId: number;
   name: string;
+  /**
+   * The words on this product's button, everywhere it appears.
+   *
+   * One string rather than one per call site, because a product whose action is reworded per screen
+   * reads as several products — the guest who hesitated over "Buy tickets" in the hero no longer
+   * recognises "Book now" further down and starts the decision again.
+   */
+  cta: string;
   /** What it is, in the words a guest would use at the reception desk. */
   kicker: string;
   priceFrom: number;
@@ -73,6 +81,7 @@ export const TOURS: Tour[] = [
     href: "/tours/elaphiti-islands",
     serviceId: 305,
     name: "Elaphiti Islands",
+    cta: "Book the island day",
     kicker: "The full day out",
     priceFrom: 55,
     priceNote: "€55 from Dubrovnik · €59 from the bay",
@@ -138,6 +147,7 @@ export const TOURS: Tour[] = [
     href: "/tours/blue-cave",
     serviceId: 331,
     name: "Blue Cave",
+    cta: "Book the Blue Cave",
     kicker: "The half day",
     priceFrom: 60,
     duration: "4 hours",
@@ -190,6 +200,7 @@ export const TOURS: Tour[] = [
     href: "/line",
     serviceId: 306,
     name: "The Line",
+    cta: "Buy line tickets",
     kicker: "Getting about",
     priceFrom: 10,
     priceNote: "One way, per adult",
@@ -241,6 +252,9 @@ export const getTour = (slug: string) => TOURS.find((t) => t.slug === slug);
 
 /** The hero tour. Everything on the homepage is arranged around selling this one. */
 export const HERO_TOUR = TOURS[0];
+
+/** The scheduled service. Highest volume, lowest margin, and the reason most people find the site. */
+export const LINE_TOUR = TOURS[2];
 
 /**
  * The NAP — name, address, phone.

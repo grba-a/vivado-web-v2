@@ -409,20 +409,182 @@ async function assertPositioning(browser) {
   check(times === 1, "the island headline appears exactly once", `found ${times}`);
 
   /*
-    The hero's primary action is navigational now, so it must not be a booking link — and it must
-    not be red either. Red is reserved for buttons that take money; spending it on "see the tours"
-    would leave the brand colour meaning nothing.
-  */
-  /*
-    One red button in the hero, pointing at the menu. Red for a navigational button is a deliberate
-    exception the client asked for, so it is asserted rather than merely allowed — and the count is
-    checked so a second one never creeps in beside it.
+    The hero's primary action buys something.
+
+    It used to scroll to the menu, which is movement rather than conversion, and this assertion used to
+    demand exactly that. The island day carries several times the margin of a line ticket, so the red
+    button goes to its calendar — while the headline still refuses to name a price, which is what keeps
+    the positioning intact. Both halves are asserted, because either one drifting undoes the other.
   */
   const heroCtas = await page.locator("[data-hero] a.enamel").evaluateAll((els) =>
-    els.map((e) => e.getAttribute("href")),
+    els.map((e) => ({ href: e.getAttribute("href"), text: e.textContent?.trim() })),
   );
   check(heroCtas.length === 1, "exactly one red button in the hero", JSON.stringify(heroCtas));
-  check(heroCtas[0] === "#tours", "hero primary points at the menu", String(heroCtas[0]));
+  check(
+    /secure\.ez-booker\.com/.test(heroCtas[0]?.href ?? ""),
+    "hero primary goes to the booking engine",
+    String(heroCtas[0]?.href),
+  );
+
+  /*
+    Every filled red button on the site asks for the same product in the same words. A call to action
+    reworded per screen reads as several products, and the guest who hesitated over one no longer
+    recognises it lower down.
+  */
+  const redWords = await page.locator("a.enamel").evaluateAll((els) =>
+    [...new Set(els.map((e) => e.textContent?.trim()))],
+  );
+  check(
+    redWords.length === 1,
+    "every red button uses identical wording",
+    JSON.stringify(redWords),
+  );
+
+  /*
+    One filled red button per viewport, walked down the whole page.
+
+    This is the brief's hardest visual rule and the only way to check it is to actually step through the
+    document a screen at a time: three cards each carrying a red button pass any per-element test and
+    still leave a screen with three primary actions, which is a screen with none.
+  */
+  const worstViewport = await page.evaluate(() => {
+    const isRed = (el) => {
+      const m = getComputedStyle(el).backgroundColor.match(/\d+(\.\d+)?/g);
+      if (!m) return false;
+      const [r, g, b] = m.map(Number);
+      const a = m[3] === undefined ? 1 : Number(m[3]);
+      return a > 0.5 && r > 150 && g < 90 && b < 90;
+    };
+    const reds = [...document.querySelectorAll("a,button")].filter(
+      (el) => isRed(el) && el.getClientRects().length > 0,
+    );
+    const vh = window.innerHeight;
+    let worst = 0;
+    for (let top = 0; top < document.documentElement.scrollHeight; top += vh) {
+      const n = reds.filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.bottom + window.scrollY > top && r.top + window.scrollY < top + vh;
+      }).length;
+      if (n > worst) worst = n;
+    }
+    return worst;
+  });
+  check(worstViewport <= 1, "never more than one red button in a viewport", `worst: ${worstViewport}`);
+
+  await context.close();
+}
+
+/**
+ * Nothing on this site may claim something nobody has verified.
+ *
+ * This is the assertion that matters most on this pass, because the failure mode is not a broken layout
+ * — it is a page that looks finished while telling a guest something untrue. Two ratings are in dispute
+ * (88 on the client's own widget, 263 in the research brief) and four booking promises are unconfirmed,
+ * so all six are withheld in code. These checks make the withholding structural rather than a habit.
+ */
+async function assertNothingInvented(browser) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  await page.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await settle(page);
+  await scrollThrough(page);
+
+  const body = (await page.locator("body").innerText()).toLowerCase();
+
+  /*
+    The four answers held back in `faq.ts`. Each is a promise — refunds on weather cancellations, a
+    24-hour reply, a price guarantee against the booking sites, a scanned mobile ticket — and Vivado's
+    own reviews say the first two are exactly where they have failed people before. Publishing them
+    unconfirmed would manufacture the complaints this section exists to answer.
+  */
+  const mustNotAppear = [
+    "full refund or a free reschedule",
+    "within 24 hours, in season and out",
+    "no agency fee on top",
+    "crew scans it at the jetty",
+    "free cancellation",
+  ];
+  for (const phrase of mustNotAppear) {
+    check(!body.includes(phrase), `withheld claim absent: "${phrase}"`);
+  }
+
+  /* Structured data must parse, and must not invent what the page refuses to claim. */
+  const schemas = await page.evaluate(() =>
+    [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => s.textContent),
+  );
+  check(schemas.length >= 2, "homepage emits organisation and FAQ schema", `found ${schemas.length}`);
+
+  const parsed = [];
+  for (const raw of schemas) {
+    try {
+      parsed.push(JSON.parse(raw ?? ""));
+    } catch (e) {
+      check(false, "every ld+json block parses", String(e));
+    }
+  }
+
+  const org = parsed.find((p) => p["@type"] === "TravelAgency");
+  check(Boolean(org), "TravelAgency schema present");
+
+  /*
+    The schema is the tell for whether the ratings have been turned on.
+
+    Reading `reviews.ts` from here is not an option — this is plain Node and that is TypeScript — and
+    hard-coding "no rating" would make the whole check fail the day the real figures land. So the state
+    is taken from the markup: `aggregateRating` appears only when `RATINGS.google` is set, and while it
+    is absent the page must carry no rating figure anywhere either. Once the numbers are verified, these
+    checks stand down on their own.
+  */
+  const ratingsPublished = Boolean(org && "aggregateRating" in org);
+  if (!ratingsPublished) {
+    check(!/\b263\b/.test(body), "no unverified review count on the page");
+    check(!/\b4\.7\b/.test(body), "no unverified rating on the page");
+    check(!/\b88 reviews\b/.test(body), "the old hard-coded 88 is gone");
+  } else {
+    /* When they are on, the printed figure and the marked-up one have to be the same number. */
+    const value = String(org.aggregateRating.ratingValue);
+    const count = String(org.aggregateRating.reviewCount);
+    check(body.includes(value), "printed rating matches the schema", value);
+    check(body.includes(count), "printed review count matches the schema", count);
+  }
+  /* Coordinates were requested but never measured, and an approximate pin on a business whose product
+     is "be at this spot at this time" is worse than none. */
+  check(org ? !("geo" in org) : true, "no guessed coordinates in the schema");
+
+  const faq = parsed.find((p) => p["@type"] === "FAQPage");
+  check(Boolean(faq), "FAQPage schema present");
+  const rendered = await page.locator("#faq details").count();
+  check(
+    faq ? faq.mainEntity.length === rendered : false,
+    "every marked-up question is actually on the page",
+    `schema ${faq?.mainEntity?.length} vs rendered ${rendered}`,
+  );
+
+  await context.close();
+}
+
+/** Canonical was missing site-wide, which let the vercel.app copy compete with the real domain. */
+async function assertCanonicals(browser) {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+
+  for (const route of ["/", "/line", "/about", "/tours/elaphiti-islands", "/tours/blue-cave"]) {
+    await page.goto(BASE + route, { waitUntil: "domcontentloaded" });
+    const href = await page
+      .locator('link[rel="canonical"]')
+      .first()
+      .getAttribute("href")
+      .catch(() => null);
+    check(Boolean(href), `canonical present on ${route}`, String(href));
+
+    const h1s = await page.locator("h1").count();
+    check(h1s === 1, `exactly one h1 on ${route}`, `found ${h1s}`);
+
+    const noAlt = await page.evaluate(
+      () => [...document.images].filter((i) => !i.hasAttribute("alt")).length,
+    );
+    check(noAlt === 0, `every image has alt on ${route}`, `missing ${noAlt}`);
+  }
 
   await context.close();
 }
@@ -441,6 +603,8 @@ await assertBooking(cr);
 await assertVideoGates(cr);
 await assertMobileNav(cr);
 await assertReadyBand(cr);
+await assertNothingInvented(cr);
+await assertCanonicals(cr);
 await cr.close();
 
 const wk = await webkit.launch();

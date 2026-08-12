@@ -292,13 +292,23 @@
   */
   @media (max-width: 1023px) {
     .hero-scrim {
+      /*
+        The falloff is fast on purpose. A gentle ramp from the copy up to the top edge spends its whole
+        length in the middle of the alpha range, which is where a photograph looks neither dark nor
+        clear — it looks switched off. The first version did exactly that and the phone read as a black
+        page with type on it, which loses the one thing the client actually asked for.
+
+        So the plate holds flat to where the eyebrow starts (72% up from the bottom, set by `pt-[28vh]`
+        on the copy) and then clears almost at once. The band above the words gets real film instead of
+        a long grey wash.
+      */
       background: linear-gradient(
         to top,
         rgb(var(--deep-channels) / 0.94) 0%,
-        rgb(var(--deep-channels) / 0.9) 60%,
-        rgb(var(--deep-channels) / 0.84) 76%,
-        rgb(var(--deep-channels) / 0.25) 92%,
-        rgb(var(--deep-channels) / 0) 100%
+        rgb(var(--deep-channels) / 0.9) 66%,
+        rgb(var(--deep-channels) / 0.82) 74%,
+        rgb(var(--deep-channels) / 0.2) 82%,
+        rgb(var(--deep-channels) / 0) 88%
       );
     }
   }
@@ -337,14 +347,27 @@
     border: 1px solid rgb(255 255 255 / 0.32);
     color: var(--color-on-deep);
     font-weight: 500;
+    /*
+      Not a bare outline. These sit in the header, over the top-right corner of the film — which on this
+      footage is blown-out white water, measured at 253. The header's own gradient brought the ground
+      down to 117 there and the 14px label still came out at 3.8:1.
+
+      The alternative was a heavier band across the whole top of the picture, which is the flat veil
+      mistake in a new costume. Tinting the control itself costs one pill of darkness instead of the
+      width of the frame, takes the label to about 8.6:1, and reads more like a button than an outline
+      floating on a photograph did.
+    */
+    background-color: rgb(var(--deep-channels) / 0.45);
     transition:
       background-color 140ms var(--ease-out-quart),
       border-color 140ms var(--ease-out-quart);
   }
 
+  /* Hover goes *darker*, not lighter. A brighter fill would lift the ground back toward the film and
+     undo the contrast the tint just bought. */
   .engraved-deep:hover {
-    background-color: rgb(255 255 255 / 0.08);
-    border-color: rgb(255 255 255 / 0.6);
+    background-color: rgb(var(--deep-channels) / 0.68);
+    border-color: rgb(255 255 255 / 0.65);
   }
 }
 

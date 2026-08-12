@@ -33,6 +33,26 @@ export function Header() {
           : "border-transparent bg-transparent"
       }`}
     >
+      {/*
+        The bar's own ground, and it belongs here rather than in the hero.
+
+        It was painted across the top of `.hero-scrim` first, which looked identical at rest and was
+        wrong the moment anybody scrolled: the header is sticky, the hero is not, so the bar slid down
+        the film and left its protection behind at the top of the page. Measuring only at scroll 0 hid
+        that completely — the nav spends most of its life floating over whatever frame happens to be
+        passing underneath it.
+
+        Attached to the header, the gradient travels with the bar. It extends below the row so the fade
+        finishes in open space instead of stopping at the border, and it sits behind the content with
+        `-z-10`.
+      */}
+      {!solid && (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[7.5rem] bg-gradient-to-b from-deep/85 via-deep/45 to-transparent"
+        />
+      )}
+
       <div className="shell flex h-16 items-center justify-between gap-6 sm:h-18">
         <Link href="/" className="shrink-0" aria-label="Vivado — home">
           <Image

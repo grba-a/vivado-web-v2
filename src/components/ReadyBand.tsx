@@ -2,7 +2,8 @@
 
 import { getJetty } from "@/lib/jetties";
 import { countdown, nextSailings } from "@/lib/schedule";
-import { CONTACT, HERO_TOUR, bookingUrl, todayInZagreb } from "@/lib/tours";
+import { CONTACT, HERO_TOUR } from "@/lib/tours";
+import { BookLink } from "./BookLink";
 import { useJetty } from "./useJetty";
 import { useZagrebClock } from "./useZagrebClock";
 
@@ -63,14 +64,13 @@ export function ReadyBand() {
           </div>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href={bookingUrl(HERO_TOUR.serviceId, todayInZagreb())}
-              target="_blank"
-              rel="noopener noreferrer"
+            <BookLink
+              serviceId={HERO_TOUR.serviceId}
+              cta="ready_band"
               className="enamel px-6 py-3 text-[0.9375rem]"
             >
-              Buy tickets
-            </a>
+              {HERO_TOUR.cta}
+            </BookLink>
             <a href={CONTACT.phoneHref} className="engraved bg-paper px-5 py-3 text-[0.9375rem]">
               Call us
             </a>

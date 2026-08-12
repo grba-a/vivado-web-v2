@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { TOURS } from "@/lib/tours";
+import { usePastHero } from "./usePastHero";
 
 /**
  * The phone menu.
@@ -13,10 +14,16 @@ import { TOURS } from "@/lib/tours";
  * unreachable on a phone.
  *
  * Now each element has one job: the header navigates, the sticky bar sells.
+ *
+ * The button has to invert with the hero the same way the desktop nav does. In ink on the dark plate it
+ * was a hairline circle almost nobody would find — and on a phone it is the *only* way to reach the
+ * three tour pages and the timetable, so losing it loses the navigation entirely.
  */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
+  /* Same store the header reads, so the two can never disagree about which ground they are on. */
+  const solid = usePastHero();
 
   /* Escape closes it, and the panel takes focus so a keyboard lands inside rather than behind. */
   useEffect(() => {
@@ -44,20 +51,30 @@ export function MobileNav() {
         aria-expanded={open}
         aria-controls="mobile-nav"
         aria-label={open ? "Close menu" : "Open menu"}
-        className="engraved size-11 !rounded-full"
+        className={`size-11 !rounded-full ${
+          /* Once the menu is open the panel is paper, so the button belongs to the paper too even while
+             the hero is still behind it — otherwise the control and the thing it opened disagree. */
+          solid || open ? "engraved" : "engraved-deep"
+        }`}
       >
         {/* Two bars that cross into an x. Cheaper than an icon set and it animates for free. */}
         <span aria-hidden className="relative block h-3.5 w-5">
-          <span
-            className={`absolute left-0 block h-[1.5px] w-full bg-ink transition-transform duration-200 ${
-              open ? "top-1/2 rotate-45" : "top-0"
-            }`}
-          />
-          <span
-            className={`absolute left-0 block h-[1.5px] w-full bg-ink transition-transform duration-200 ${
-              open ? "top-1/2 -rotate-45" : "bottom-0"
-            }`}
-          />
+          {[0, 1].map((i) => (
+            <span
+              key={i}
+              className={`absolute left-0 block h-[1.5px] w-full transition-transform duration-200 ${
+                solid || open ? "bg-ink" : "bg-on-deep"
+              } ${
+                open
+                  ? i === 0
+                    ? "top-1/2 rotate-45"
+                    : "top-1/2 -rotate-45"
+                  : i === 0
+                    ? "top-0"
+                    : "bottom-0"
+              }`}
+            />
+          ))}
         </span>
       </button>
 
